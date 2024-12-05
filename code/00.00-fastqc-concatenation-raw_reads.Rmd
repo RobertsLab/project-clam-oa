@@ -241,8 +241,6 @@ done
 # Load bash variables into memory
 source .bashvars
 
-# Make output directory if it doesn't exist
-mkdir --parents "${raw_fastqc_dir}"
 
 ############ RUN FASTQC ############
 
@@ -258,9 +256,9 @@ echo ""
 
 # Run FastQC
 ### NOTE: Do NOT quote raw_fastqc_list
-fastqc \
+${fastqc} \
 --threads ${threads} \
---outdir ${raw_fastqc_dir} \
+--outdir ${raw_reads_dir} \
 --quiet \
 ${raw_fastqc_list}
 
@@ -273,7 +271,7 @@ echo ""
 echo "Beginning MultiQC on raw FastQC..."
 echo ""
 
-multiqc ${raw_fastqc_dir} -o ${raw_fastqc_dir}
+${multiqc} ${raw_fastqc_dir} -o ${raw_fastqc_dir}
 
 echo ""
 echo "MultiQC on raw FastQs complete."
@@ -286,8 +284,13 @@ echo ""
 rm ${raw_fastqc_dir}/*.zip
 echo "FastQC zip files removed."
 echo ""
+```
 
-# View directory contents
-ls -lh ${raw_fastqc_dir}
+
+## View directory contents
+```{bash list-output-files, engine='bash', eval=FALSE}
+# Load bash variables into memory
+source .bashvars
+ls -lh ${raw_reads_dir}
 
 ```
