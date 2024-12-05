@@ -288,7 +288,7 @@ echo ""
 
 
 ## View directory contents
-```{bash list-output-files, engine='bash', eval=FALSE}
+```{bash list-output-files, engine='bash', eval=TRUE}
 # Load bash variables into memory
 source .bashvars
 ls -lh ${raw_reads_dir}
