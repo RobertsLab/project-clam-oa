@@ -2,3 +2,12 @@
 .Rhistory
 .RData
 .Ruserdata
+*.fq
+*.fastq
+*.fq.gz
+*.fastq.gz
+*.ht2
+*.bashvars
+*.bam
+*.sam
+.DS_Store
