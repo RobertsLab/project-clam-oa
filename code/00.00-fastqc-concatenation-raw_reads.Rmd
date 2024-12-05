@@ -147,6 +147,9 @@ source .bashvars
 
 cd "${raw_reads_dir}/${project_dir_1}"
 
+pwd
+echo ""
+
 for checksum in *.md5
 do
   md5sum --check ${checksum}
@@ -157,6 +160,9 @@ echo "${line}"
 echo ""
 
 cd "${raw_reads_dir}/${project_dir_2}"
+
+pwd
+echo ""
 
 for checksum in *.md5
 do
@@ -181,7 +187,7 @@ cd "${raw_reads_dir}"
 # Declare an associative array to keep track of processed files
 declare -A processed_files
 
-for first_run_fastq in "${raw_reads_dir}"/2018OALarvae_DNAm_discovery/${fastq_pattern}
+for first_run_fastq in "${raw_reads_dir}"/"${project_dir_1}"/${fastq_pattern}
 do
   # Strip full path to just get filename.
   first_run_fastq_name="${first_run_fastq##*/}"
@@ -191,7 +197,7 @@ do
 
   # Process second run and concatenate with corresponding FastQ from first run
   # Do NOT quote fastq_pattern variable
-  for second_run_fastq in "${raw_reads_dir}"/2018OALarvae_DNAm_discovery/second_lane/${fastq_pattern}
+  for second_run_fastq in "${raw_reads_dir}"/"${project_dir_2}"/${fastq_pattern}
   do
     # Strip full path to just get filename.
     second_run_fastq_name="${second_run_fastq##*/}"
