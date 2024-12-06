@@ -102,6 +102,10 @@ echo 'export first_adapter="AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC"'
 echo 'export second_adapter="GATCGTCGGACTGTAGAACTCTGAACGTGTAGATCTCGGTGGTCGCCGTATCATT"'
 echo ""
 
+echo "# Set maximum read length for fastp merging"
+echo 'export max_read_length="31"'
+echo ""
+
 echo "# Set number of CPUs to use"
 echo 'export threads=40'
 echo ""
