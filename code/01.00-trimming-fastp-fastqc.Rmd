@@ -162,7 +162,7 @@ echo ""
 source .bashvars
 
 # Create output directory, if it doesn't exist.
-mkdir --parents "${trimmed_reads_dir}"
+mkdir --parents "${trimmed_fastqs_dir}"
 
 # Change to directory with raw reads
 cd "${raw_reads_dir}"
@@ -209,7 +209,7 @@ do
   merged_sample_name="${R1_sample_name}-fastp-adapters-polyG-${max_read_length}bp-merged"
   
   # Begin fastp trimming
-  ${programs_array[fastp]} \
+  ${fastp} \
   --in1 ${fastq_array_R1[index]} \
   --in2 ${fastq_array_R2[index]} \
   --adapter_fasta ${output_dir_top}/${NEB_adapters_fasta} \
@@ -217,15 +217,15 @@ do
   --overlap_len_require 17 \
   --length_limit ${max_read_length} \
   --merge \
-  --merged_out ${trimmed_reads_dir}/${merged_sample_name}.fq.gz \
+  --merged_out ${trimmed_fastqs_dir}/${merged_sample_name}.fq.gz \
   --thread ${threads} \
-  --html "${trimmed_reads_dir}/${merged_sample_name}.html" \
-  --json "${trimmed_reads_dir}/${merged_sample_name}.json" \
-  --report_title "${trimmed_reads_dir}/${merged_sample_name}"
+  --html "${trimmed_fastqs_dir}/${merged_sample_name}.html" \
+  --json "${trimmed_fastqs_dir}/${merged_sample_name}.json" \
+  --report_title "${trimmed_fastqs_dir}/${merged_sample_name}"
     
   # Move to trimmed directory
   # This is done so checksums file doesn't include excess path
-  cd ${trimmed_reads_dir}
+  cd ${trimmed_fastqs_dir}
 
   # Generate md5 checksums for newly trimmed files
   md5sum "${merged_sample_name}.fq.gz" | tee --append "${merged_sample_name}.fq.gz.md5"
@@ -250,13 +250,13 @@ echo ""
 source .bashvars
 
 # Create output directory, if it doesn't exist.
-mkdir --parents "${trimmed_reads_dir}"
+mkdir --parents "${trimmed_fastqs_dir}"
 
 ############ RUN FASTQC ############
 
 ### NOTE: Do NOT quote raw_fastqc_list
 # Create array of trimmed FastQs
-trimmed_fastqs_array=(${trimmed_reads_dir}/*merged.fq.gz)
+trimmed_fastqs_array=(${trimmed_fastqs_dir}/*merged.fq.gz)
 
 # Pass array contents to new variable as space-delimited list
 trimmed_fastqc_list=$(echo "${trimmed_fastqs_array[*]}")
@@ -267,7 +267,7 @@ echo ""
 # Run FastQC
 ${fastqc} \
 --threads ${threads} \
---outdir ${trimmed_reads_dir} \
+--outdir ${trimmed_fastqs_dir} \
 --quiet \
 ${trimmed_fastqc_list}
 
@@ -280,7 +280,7 @@ echo ""
 echo "Beginning MultiQC on raw FastQC..."
 echo ""
 
-${multiqc} ${trimmed_reads_dir} -o ${trimmed_reads_dir}
+${multiqc} ${trimmed_fastqs_dir} -o ${trimmed_fastqs_dir}
 
 echo ""
 echo "MultiQC on trimmed FastQs complete."
@@ -290,11 +290,11 @@ echo ""
 
 echo "Removing FastQC zip files."
 echo ""
-rm ${trimmed_reads_dir}/*.zip
+rm ${trimmed_fastqs_dir}/*.zip
 echo "FastQC zip files removed."
 echo ""
 
 # View directory contents
-ls -lh ${trimmed_reads_dir}
+ls -lh ${trimmed_fastqs_dir}
 
 ```
