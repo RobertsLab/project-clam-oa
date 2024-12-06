@@ -1,0 +1,44 @@
+WARNING: fastp uses up to 16 threads although you specified 40
+Read1 before filtering:
+total reads: 19918975
+total bases: 2987846250
+Q20 bases: 2699112094(90.3364%)
+Q30 bases: 2240168321(74.976%)
+
+Read2 before filtering:
+total reads: 19918975
+total bases: 2987846250
+Q20 bases: 2936279233(98.2741%)
+Q30 bases: 2854710910(95.5441%)
+
+Merged and filtered:
+total reads: 16654275
+total bases: 477058932
+Q20 bases: 474760754(99.5183%)
+Q30 bases: 452633733(94.88%)
+
+Filtering result:
+reads passed filter: 35159448
+reads failed due to low quality: 217686
+reads failed due to too many N: 494
+reads failed due to too short: 1557494
+reads failed due to too long: 2902828
+reads with adapter trimmed: 35856520
+bases trimmed due to adapters: 2164706395
+reads corrected by overlap analysis: 841287
+bases corrected by overlap analysis: 933307
+
+Duplication rate: 24.5119%
+
+Insert size peak (evaluated by paired-end reads): 30
+
+Read pairs merged: 16654275
+% of original read pairs: 83.6101%
+% in reads after filtering: 100%
+
+
+JSON report: /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/33-fastp-adapters-polyG-31bp-merged.json
+HTML report: /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/33-fastp-adapters-polyG-31bp-merged.html
+
+/home/shared/fastp-v0.24.0/fastp --in1 33_R1_001.fastq.gz --in2 33_R2_001.fastq.gz --adapter_fasta /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/NEB-adapters.fasta --trim_poly_g --overlap_len_require 17 --length_limit 31 --merge --merged_out /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/33-fastp-adapters-polyG-31bp-merged.fq.gz --thread 40 --html /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/33-fastp-adapters-polyG-31bp-merged.html --json /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/33-fastp-adapters-polyG-31bp-merged.json --report_title /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/33-fastp-adapters-polyG-31bp-merged 
+fastp v0.24.0, time used: 32 seconds
