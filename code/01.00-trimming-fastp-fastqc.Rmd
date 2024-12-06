@@ -225,7 +225,8 @@ do
   --thread ${threads} \
   --html "${trimmed_fastqs_dir}/${merged_sample_name}.html" \
   --json "${trimmed_fastqs_dir}/${merged_sample_name}.json" \
-  --report_title "${trimmed_fastqs_dir}/${merged_sample_name}"
+  --report_title "${trimmed_fastqs_dir}/${merged_sample_name}" \
+  2> ${trimmed_fastqs_dir}/${merged_sample_name}.stderr
     
   # Move to trimmed directory
   # This is done so checksums file doesn't include excess path
