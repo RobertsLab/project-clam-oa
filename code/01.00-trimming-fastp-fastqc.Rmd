@@ -155,3 +155,146 @@ cat "${output_dir_top}/${NEB_adapters_fasta}"
 echo ""
 ```
 
+# Trimming and merging with fastp
+
+```{bash fastp-and-merging, engine='bash'}
+# Load bash variables into memory
+source .bashvars
+
+# Create output directory, if it doesn't exist.
+mkdir --parents "${trimmed_reads_dir}"
+
+# Change to directory with raw reads
+cd "${raw_reads_dir}"
+
+# Create arrays of FastQ R1 files and sample names
+# Do NOT quote R1_fastq_pattern variable
+for fastq in ${R1_fastq_pattern}
+do
+  fastq_array_R1+=("${fastq}")
+
+  # Use parameter substitution to remove all text up to and including last "." from
+  # right side of string.
+  R1_names_array+=("${fastq%%.*}")
+done
+
+# Create array of FastQ R2 files
+# Do NOT quote R2_fastq_pattern variable
+for fastq in ${R2_fastq_pattern}
+do
+  fastq_array_R2+=("${fastq}")
+
+  # Use parameter substitution to remove all text up to and including last "." from
+  # right side of string.
+  R2_names_array+=("${fastq%%.*}")
+done
+
+############ RUN FASTP ############
+# Uses parameter substitution (e.g. ${R1_sample_name%%_*})to rm the _R[12]
+# Uses NEB adapter file
+
+
+# Run fastp on files
+echo "Beginning fastp trimming."
+echo ""
+
+time \
+for index in "${!fastq_array_R1[@]}"
+do
+  # Get sample name
+  R1_sample_name="${R1_names_array[index]%%_*}"
+  R2_sample_name="${R2_names_array[index]%%_*}"
+
+  # Save merged sample name
+  merged_sample_name="${R1_sample_name}-fastp-adapters-polyG-${max_read_length}bp-merged"
+  
+  # Begin fastp trimming
+  ${programs_array[fastp]} \
+  --in1 ${fastq_array_R1[index]} \
+  --in2 ${fastq_array_R2[index]} \
+  --adapter_fasta ${output_dir_top}/${NEB_adapters_fasta} \
+  --trim_poly_g \
+  --overlap_len_require 17 \
+  --length_limit ${max_read_length} \
+  --merge \
+  --merged_out ${trimmed_reads_dir}/${merged_sample_name}.fq.gz \
+  --thread ${threads} \
+  --html "${trimmed_reads_dir}/${merged_sample_name}.html" \
+  --json "${trimmed_reads_dir}/${merged_sample_name}.json" \
+  --report_title "${trimmed_reads_dir}/${merged_sample_name}"
+    
+  # Move to trimmed directory
+  # This is done so checksums file doesn't include excess path
+  cd ${trimmed_reads_dir}
+
+  # Generate md5 checksums for newly trimmed files
+  md5sum "${merged_sample_name}.fq.gz" | tee --append "${merged_sample_name}.fq.gz.md5"
+    
+  # Change back to to raw reads directory
+  cd "${raw_reads_dir}"
+
+done
+
+echo ""
+echo "fastp trimming complete."
+echo ""
+
+############ END fastp ############
+
+```
+
+# FastQC/MultiQC on trimmed reads
+
+```{bash FastQC-MultiQC-trimmed-reads, engine='bash', eval=FALSE}
+# Load bash variables into memory
+source .bashvars
+
+# Create output directory, if it doesn't exist.
+mkdir --parents "${trimmed_reads_dir}"
+
+############ RUN FASTQC ############
+
+### NOTE: Do NOT quote raw_fastqc_list
+# Create array of trimmed FastQs
+trimmed_fastqs_array=(${trimmed_reads_dir}/*merged.fq.gz)
+
+# Pass array contents to new variable as space-delimited list
+trimmed_fastqc_list=$(echo "${trimmed_fastqs_array[*]}")
+
+echo "Beginning FastQC on raw reads..."
+echo ""
+
+# Run FastQC
+${fastqc} \
+--threads ${threads} \
+--outdir ${trimmed_reads_dir} \
+--quiet \
+${trimmed_fastqc_list}
+
+echo "FastQC on trimmed reads complete!"
+echo ""
+
+############ END FASTQC ############
+
+############ RUN MULTIQC ############
+echo "Beginning MultiQC on raw FastQC..."
+echo ""
+
+${multiqc} ${trimmed_reads_dir} -o ${trimmed_reads_dir}
+
+echo ""
+echo "MultiQC on trimmed FastQs complete."
+echo ""
+
+############ END MULTIQC ############
+
+echo "Removing FastQC zip files."
+echo ""
+rm ${trimmed_reads_dir}/*.zip
+echo "FastQC zip files removed."
+echo ""
+
+# View directory contents
+ls -lh ${trimmed_reads_dir}
+
+```
