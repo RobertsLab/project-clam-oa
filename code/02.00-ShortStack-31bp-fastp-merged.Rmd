@@ -149,8 +149,6 @@ py_config()
 
 ## Excecute ShortStack command
 
-### THIS KEEPS CRASHING AFTER Screening of possible de novo microRNAs
-
 Uses the `--dn_mirna` option to identify miRNAs in the genome, without relying on the `--known_miRNAs`.
 
 This part of the code redirects the output of `time` to the end of `shortstack.log` file.
