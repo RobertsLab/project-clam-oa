@@ -11,3 +11,5 @@
 *.bam
 *.sam
 .DS_Store
+*_genomic.fna
+*_genomic.g[tf]f
