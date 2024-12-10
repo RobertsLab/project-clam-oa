@@ -103,13 +103,13 @@ echo "# Data directories"
 echo 'export repo_dir=/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa'
 echo 'export repo_data_dir="${repo_dir}/data"'
 echo 'export output_dir_top=${repo_dir}/output/02.00-ShortStack-31bp-fastp-merged'
-echo 'export trimmed_fastqs_dir="${repo_dir}/output/01.00-trimming-fastp-fastqc$"'
+echo 'export trimmed_fastqs_dir="${repo_dir}/output/01.00-trimming-fastp-fastqc"'
 echo ""
 
 echo "# Input/Output files"
 echo 'export genome_fasta_dir=${repo_data_dir}/genome_files'
 echo 'export genome_fasta_name="GCF_026571515.1_ASM2657151v2_genomic.fna"'
-echo 'export shortstack_genome_fasta_name="GCF_026571515.1_ASM2657151v2_genomic.fna"'
+echo 'export shortstack_genome_fasta_name="GCF_026571515.1_ASM2657151v2_genomic.fa"'
 echo 'export mirbase_mature_fasta=mirbase-mature-v22.1.fa'
 echo 'export genome_fasta="${genome_fasta_dir}/${shortstack_genome_fasta_name}"'
 echo ""
@@ -155,7 +155,7 @@ This part of the code redirects the output of `time` to the end of `shortstack.l
 
 -   `; } \ 2>> ${output_dir_top}/shortstack.log`
 
-```{r shortstack, engine='bash', cache=TRUE}
+```{r shortstack, engine='bash'}
 # Load bash variables into memory
 source .bashvars
 
@@ -168,6 +168,9 @@ trimmed_fastqs_array=(${trimmed_fastqs_dir}/${trimmed_fastqs_pattern})
 
 # Pass array contents to new variable as space-delimited list
 trimmed_fastqs_list=$(echo "${trimmed_fastqs_array[*]}")
+
+# Rename genome FastA to ShortStack naming convention
+cp "${genome_fasta_dir}"/"${genome_fasta_name}" "${genome_fasta}"
 
 
 ###### Run ShortStack ######
