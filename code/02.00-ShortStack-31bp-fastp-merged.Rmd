@@ -46,6 +46,10 @@ knitr::opts_chunk$set(
 
 Use [ShortStack](https://github.com/MikeAxtell/ShortStack) [@Axtell2013-xu; @johnson2016; @Shahid2014-lx] to perform alignment of sRNAseq data and annotation of sRNA-producing genes.
 
+Due to large file sizes of some of the input and output files, not all files can be sync'd to GitHub. A full backup of this repo is available here:
+
+- [https://gannet.fish.washington.edu/gitrepos/project-clam-oa](https://gannet.fish.washington.edu/gitrepos/project-clam-oa)
+
 ------------------------------------------------------------------------
 
 Inputs:
@@ -155,7 +159,7 @@ This part of the code redirects the output of `time` to the end of `shortstack.l
 
 -   `; } \ 2>> ${output_dir_top}/shortstack.log`
 
-```{r shortstack, engine='bash'}
+```{r shortstack, engine='bash', eval=TRUE}
 # Load bash variables into memory
 source .bashvars
 
