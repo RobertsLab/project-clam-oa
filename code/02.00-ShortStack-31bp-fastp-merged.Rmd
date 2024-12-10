@@ -269,7 +269,7 @@ awk '$21=="NA" {print $0}' ${output_dir_top}/ShortStack_out/Results.txt \
 
 ```
 
-Although there are NN loci with matches to miRBase miRNAs, ShortStack did *not* annotate NN of these clusters as miRNAs likely [because they do not *also* match secondary structure criteria](https://github.com/MikeAxtell/ShortStack#mirna-annotation).
+Although there are 92 loci with matches to miRBase miRNAs, ShortStack did *not* annotate 55 of these clusters as miRNAs likely [because they do not *also* match secondary structure criteria](https://github.com/MikeAxtell/ShortStack#mirna-annotation).
 
 This explains the difference between the 46 and 37 miRNAs.
 
@@ -285,102 +285,4 @@ source .bashvars
 
 tree -h ${output_dir_top}/
 
-```
-
-## Visualize
-
-We noticed that a) not all of the identified miRNAs have database matches, and b) some reads have a match in the database but are *not* classified as miRNAs. Let's look at this in more depth.
-
-```{r load-results, eval=TRUE}
-Peve_shortstack_results <- read.csv("../output/08.2-Peve-sRNAseq-ShortStack-31bp-fastp-merged/ShortStack_out/Results.txt", sep="\t")
-```
-
-```{r generate-plots, eval=TRUE}
-# Reads identified as miRNAs (but not necessarily known)
-Peve_shortstack_results %>% 
-  filter(MIRNA == "Y") %>%
-  mutate(known_miRNAs = str_sub(known_miRNAs, 1, 40)) %>%
-  mutate(Locus = str_sub(Locus, 20, 40)) %>%
-  ggplot(aes(x = reorder(Locus, Reads), y = Reads, fill = known_miRNAs)) +
-  geom_bar(stat = "identity") +
-   geom_text(aes(label = Reads), vjust = 0.5, hjust = 0, color = "black", size = 2.5, angle = 90) +
-  labs(x = "miRNA", y = "Read count", 
-       title = "Reads identified by ShortStack as miRNAs",
-       fill = "Annotation") +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-  
-ggsave("../output/08.2-Peve-sRNAseq-ShortStack-31bp-fastp-merged/figures/Peve_ShortStack_miRNA_histogram.png", width = 12, height = 7, units = "in")
-
-
-# Reads matched in the reference db (but not necessarily identified as miRNA)
-Peve_shortstack_results %>% 
-  filter(!is.na(known_miRNAs)) %>%
-  mutate(known_miRNAs = str_sub(known_miRNAs, 1, 40)) %>%
-  mutate(Locus = str_sub(Locus, 20, 40)) %>%
-  ggplot(aes(x = reorder(Locus, Reads), y = Reads, fill = MIRNA)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = Reads), vjust = 0.5, hjust = 0, color = "black", size = 2.5, angle = 90) +
-  labs(x = "miRNA", y = "Read count", 
-       title = "Reads with miRBase+cnidarian database matches",
-       fill = "Identified as miRNA?") +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-
-ggsave("../output/08.2-Peve-sRNAseq-ShortStack-31bp-fastp-merged/figures/Peve_ShortStack_dbmatch_histogram.png", width = 12, height = 7, units = "in")
-```
-
-There's one miRNA with a very high read count, and it's making visualization of the rest difficult. Let's remove it and retry visualizing the rest.
-
-```{r generate-plots-reduced, eval=TRUE}
-# Reads identified as miRNAs (but not necessarily known)
-Peve_shortstack_results %>% 
-  filter(MIRNA == "Y") %>%
-  filter(Reads < 200000) %>%
-  mutate(known_miRNAs = str_sub(known_miRNAs, 1, 40)) %>%
-  mutate(Locus = str_sub(Locus, 20, 40)) %>%
-  ggplot(aes(x = reorder(Locus, Reads), y = Reads, fill = known_miRNAs)) +
-  geom_bar(stat = "identity") +
-   geom_text(aes(label = Reads), vjust = 0.5, hjust = 0, color = "black", size = 2.5, angle = 90) +
-  labs(x = "miRNA", y = "Read count", 
-       title = "Reads identified by ShortStack as miRNAs",
-       fill = "Annotation") +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-  
-ggsave("../output/08.2-Peve-sRNAseq-ShortStack-31bp-fastp-merged/figures/Peve_ShortStack_miRNA_histogram_reduced.png", width = 12, height = 7, units = "in")
-
-
-# Reads matched in the reference db (but not necessarily identified as miRNA)
-Peve_shortstack_results %>% 
-  filter(!is.na(known_miRNAs)) %>%
-  filter(Reads < 200000) %>%
-  mutate(known_miRNAs = str_sub(known_miRNAs, 1, 40)) %>%
-  mutate(Locus = str_sub(Locus, 20, 40)) %>%
-  ggplot(aes(x = reorder(Locus, Reads), y = Reads, fill = MIRNA)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = Reads), vjust = 0.5, hjust = 0, color = "black", size = 2.5, angle = 90) +
-  labs(x = "miRNA", y = "Read count", 
-       title = "Reads with miRBase+cnidarian database matches",
-       fill = "Identified as miRNA?") +
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank())
-
-ggsave("../output/08.2-Peve-sRNAseq-ShortStack-31bp-fastp-merged/figures/Peve_ShortStack_dbmatch_histogram_reduced.png", width = 12, height = 7, units = "in")
-```
-
-```{r venn-diagram, eval=TRUE}
-# Make list
-mirnas <- Peve_shortstack_results %>% filter(MIRNA == "Y") %>% pull(Locus)
-matches <- Peve_shortstack_results %>% filter(!is.na(known_miRNAs)) %>% pull(Locus)
-
-Peve_shortstack_vennlist <- list(
-  "Identified as miRNA" = mirnas,
-  "Database match" = matches
-)
-
-# Make venn diagrams
-ggvenn(Peve_shortstack_vennlist)
-
-ggsave("../output/08.2-Peve-sRNAseq-ShortStack-31bp-fastp-merged/figures/Peve_ShortStack_venn.png", width = 12, height = 7, units = "in")
 ```
