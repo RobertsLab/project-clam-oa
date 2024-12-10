@@ -1,0 +1,20 @@
+Genome: /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/data/genome_files/GCF_026571515.1_ASM2657151v2_genomic.fa
+Alignments: /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/merged_alignments.bam
+Location: NW_026853749.1:104192-104296 plus
+PDF file name: /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/strucVis/Cluster_4396.ps.pdf
+Locus Name: Cluster_4396
+AAUUUUUGGUGUUGUUGUGAAGUGGAGAGAGUUUUAUCUCAUCAUCUUGGCCUAGCUUAGGGUGAGAUUCAACUCCUCCAACUGCAUGCAAUAUCAGUAGUCAGC
+.(((.((((((((((.(((.(((((((.(((((..((((((((..((.(((...))).))))))))))..))))))))).))).))))))))))))).))).... (-38.40)
+....................AGUGGAGAGAGUUUUAUCUCAUC.............................................................. len:23 al:1
+....................AGUGGAGAGAGUUUUAUCUCAUu.............................................................. len:23 al:1
+..............................................................UGAGAUUCAACUCCUCCAACc...................... len:21 al:1
+..............................................................UGAGAUUCAACUCCUCCAACUGCA................... len:24 al:8
+..............................................................UGAGAUUCAACUCCUCCAACUGuA................... len:24 al:1
+..............................................................UGAGAUUCAACUCCUCCAACUGa.................... len:23 al:1
+..............................................................UGAGAUUCAACUCCUCCAACUGCc................... len:24 al:1
+..............................................................UGAGgUUCAACUCCUCCAACUGC.................... len:23 al:1
+..............................................................UGAGAUUCAACUCCUCCAACUGC.................... len:23 al:47
+..............................................................UGAGAUUCAACUCCUCCAACUGu.................... len:23 al:11
+..............................................................UGAGAUUCAACUCCUCCAACUGCAa.................. len:25 al:4
+..............................................................UGAGAUUCAACUCCUCCAACUGCAU.................. len:25 al:3
+..............................................................UGAGAUUCAACUCCUCCAACUGCu................... len:24 al:2

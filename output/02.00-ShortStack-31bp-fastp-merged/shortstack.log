@@ -1,0 +1,654 @@
+# reads processed: 3598812
+# reads with at least one alignment: 2429499 (67.51%)
+# reads that failed to align: 1169313 (32.49%)
+Reported 9629194 alignments
+
+ShortStack version 4.1.1
+
+Beginning run
+Options:
+{   'adapter': None,
+    'align_only': False,
+    'autotrim': False,
+    'autotrim_key': 'TCGGACCAGGCTTCATTCCCC',
+    'autotrim_only': False,
+    'bamfile': None,
+    'dicermax': 24,
+    'dicermin': 21,
+    'dn_mirna': True,
+    'genomefile': '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/data/genome_files/GCF_026571515.1_ASM2657151v2_genomic.fa',
+    'known_miRNAs': '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/data/mirbase-mature-v22.1.fa',
+    'locifile': None,
+    'locus': None,
+    'make_bigwigs': False,
+    'mincov': 1,
+    'mmap': 'u',
+    'nohp': False,
+    'outdir': '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out',
+    'pad': 200,
+    'readfile': [   '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/196-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/199-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/211-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/24-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/260-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/26-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/30-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/310-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/33-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/341-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/34-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/35-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/363-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/367-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/376-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/460-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/485-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/501-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/71-fastp-adapters-polyG-31bp-merged.fq.gz',
+                    '/home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/01.00-trimming-fastp-fastqc/88-fastp-adapters-polyG-31bp-merged.fq.gz'],
+    'strand_cutoff': 0.8,
+    'threads': 40}
+Required executable RNAfold : /home/sam/programs/mambaforge/envs/ShortStack-4.1.1_env/bin/RNAfold
+Required executable strucVis : /home/sam/programs/mambaforge/envs/ShortStack-4.1.1_env/bin/strucVis
+Required executable bowtie : /home/sam/programs/mambaforge/envs/ShortStack-4.1.1_env/bin/bowtie
+Required executable bowtie-build : /home/sam/programs/mambaforge/envs/ShortStack-4.1.1_env/bin/bowtie-build
+Required executable samtools : /home/sam/programs/mambaforge/envs/ShortStack-4.1.1_env/bin/samtools
+
+Tue 10 Dec 2024 07:44:44 -0800 PST
+Condensing reads
+
+Beginning alignment phase
+
+Tue 10 Dec 2024 08:04:20 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/196-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 2723627
+# reads with at least one alignment: 1862411 (68.38%)
+# reads that failed to align: 861216 (31.62%)
+Reported 7100239 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 1108950/3598812 (30.8%)
+	reads: 5738230/16412840 (35.0%)
+Multi-mapped placed with guidance (P):
+	sequences: 766366/3598812 (21.3%)
+	reads: 5347196/16412840 (32.6%)
+Multi-mapped randomly placed (R):
+	sequences: 418999/3598812 (11.6%)
+	reads: 1460128/16412840 (8.9%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 135184/3598812 (3.8%)
+	reads: 495285/16412840 (3.0%)
+Not mapped (no hits)(N):
+	sequences: 1169313/3598812 (32.5%)
+	reads: 3372001/16412840 (20.5%)
+
+Tue 10 Dec 2024 08:05:48 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/199-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 3 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3216924
+# reads with at least one alignment: 2234376 (69.46%)
+# reads that failed to align: 982548 (30.54%)
+Reported 9102819 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 861824/2723627 (31.6%)
+	reads: 4921767/13501046 (36.5%)
+Multi-mapped placed with guidance (P):
+	sequences: 568965/2723627 (20.9%)
+	reads: 4221296/13501046 (31.3%)
+Multi-mapped randomly placed (R):
+	sequences: 338260/2723627 (12.4%)
+	reads: 1186914/13501046 (8.8%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 93362/2723627 (3.4%)
+	reads: 379100/13501046 (2.8%)
+Not mapped (no hits)(N):
+	sequences: 861216/2723627 (31.6%)
+	reads: 2791969/13501046 (20.7%)
+
+Tue 10 Dec 2024 08:06:48 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/211-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3004124
+# reads with at least one alignment: 2104498 (70.05%)
+# reads that failed to align: 899626 (29.95%)
+Reported 9138190 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 1006657/3216924 (31.3%)
+	reads: 5150058/14331623 (35.9%)
+Multi-mapped placed with guidance (P):
+	sequences: 705165/3216924 (21.9%)
+	reads: 4545103/14331623 (31.7%)
+Multi-mapped randomly placed (R):
+	sequences: 391340/3216924 (12.2%)
+	reads: 1329318/14331623 (9.3%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 131214/3216924 (4.1%)
+	reads: 496398/14331623 (3.5%)
+Not mapped (no hits)(N):
+	sequences: 982548/3216924 (30.5%)
+	reads: 2810746/14331623 (19.6%)
+
+Tue 10 Dec 2024 08:07:57 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/24-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 2938915
+# reads with at least one alignment: 2058288 (70.04%)
+# reads that failed to align: 880627 (29.96%)
+Reported 8591372 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 900075/3004124 (30.0%)
+	reads: 5404207/15464708 (34.9%)
+Multi-mapped placed with guidance (P):
+	sequences: 660277/3004124 (22.0%)
+	reads: 4855540/15464708 (31.4%)
+Multi-mapped randomly placed (R):
+	sequences: 403979/3004124 (13.4%)
+	reads: 1564897/15464708 (10.1%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 140167/3004124 (4.7%)
+	reads: 591650/15464708 (3.8%)
+Not mapped (no hits)(N):
+	sequences: 899626/3004124 (29.9%)
+	reads: 3048414/15464708 (19.7%)
+
+Tue 10 Dec 2024 08:09:16 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/260-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 3 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 2521265
+# reads with at least one alignment: 1736670 (68.88%)
+# reads that failed to align: 784595 (31.12%)
+Reported 7142746 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 905898/2938915 (30.8%)
+	reads: 5685238/15809613 (36.0%)
+Multi-mapped placed with guidance (P):
+	sequences: 630090/2938915 (21.4%)
+	reads: 4929476/15809613 (31.2%)
+Multi-mapped randomly placed (R):
+	sequences: 396349/2938915 (13.5%)
+	reads: 1633867/15809613 (10.3%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 125951/2938915 (4.3%)
+	reads: 561421/15809613 (3.6%)
+Not mapped (no hits)(N):
+	sequences: 880627/2938915 (30.0%)
+	reads: 2999611/15809613 (19.0%)
+
+Tue 10 Dec 2024 08:10:37 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/26-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 3 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3157152
+# reads with at least one alignment: 2197023 (69.59%)
+# reads that failed to align: 960129 (30.41%)
+Reported 8910059 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 770434/2521265 (30.6%)
+	reads: 5287297/14609516 (36.2%)
+Multi-mapped placed with guidance (P):
+	sequences: 529754/2521265 (21.0%)
+	reads: 4373850/14609516 (29.9%)
+Multi-mapped randomly placed (R):
+	sequences: 333211/2521265 (13.2%)
+	reads: 1478278/14609516 (10.1%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 103271/2521265 (4.1%)
+	reads: 450973/14609516 (3.1%)
+Not mapped (no hits)(N):
+	sequences: 784595/2521265 (31.1%)
+	reads: 3019118/14609516 (20.7%)
+
+Tue 10 Dec 2024 08:11:36 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/30-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 2951065
+# reads with at least one alignment: 2079245 (70.46%)
+# reads that failed to align: 871820 (29.54%)
+Reported 8582048 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 971593/3157152 (30.8%)
+	reads: 5640325/16076914 (35.1%)
+Multi-mapped placed with guidance (P):
+	sequences: 723289/3157152 (22.9%)
+	reads: 5428134/16076914 (33.8%)
+Multi-mapped randomly placed (R):
+	sequences: 378151/3157152 (12.0%)
+	reads: 1411907/16076914 (8.8%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 123990/3157152 (3.9%)
+	reads: 509091/16076914 (3.2%)
+Not mapped (no hits)(N):
+	sequences: 960129/3157152 (30.4%)
+	reads: 3087457/16076914 (19.2%)
+
+Tue 10 Dec 2024 08:12:54 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/310-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 3 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3052106
+# reads with at least one alignment: 2119160 (69.43%)
+# reads that failed to align: 932946 (30.57%)
+Reported 8751476 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 919231/2951065 (31.1%)
+	reads: 5685039/15957699 (35.6%)
+Multi-mapped placed with guidance (P):
+	sequences: 654368/2951065 (22.2%)
+	reads: 5326891/15957699 (33.4%)
+Multi-mapped randomly placed (R):
+	sequences: 380272/2951065 (12.9%)
+	reads: 1503718/15957699 (9.4%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 125374/2951065 (4.2%)
+	reads: 562715/15957699 (3.5%)
+Not mapped (no hits)(N):
+	sequences: 871820/2951065 (29.5%)
+	reads: 2879336/15957699 (18.0%)
+
+Tue 10 Dec 2024 08:14:02 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/33-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 2824599
+# reads with at least one alignment: 2004392 (70.96%)
+# reads that failed to align: 820207 (29.04%)
+Reported 8594443 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 948182/3052106 (31.1%)
+	reads: 5806018/16654516 (34.9%)
+Multi-mapped placed with guidance (P):
+	sequences: 666092/3052106 (21.8%)
+	reads: 5510171/16654516 (33.1%)
+Multi-mapped randomly placed (R):
+	sequences: 374440/3052106 (12.3%)
+	reads: 1645934/16654516 (9.9%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 130446/3052106 (4.3%)
+	reads: 591339/16654516 (3.6%)
+Not mapped (no hits)(N):
+	sequences: 932946/3052106 (30.6%)
+	reads: 3101054/16654516 (18.6%)
+
+Tue 10 Dec 2024 08:15:18 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/341-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 3 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3373653
+# reads with at least one alignment: 2341704 (69.41%)
+# reads that failed to align: 1031949 (30.59%)
+Reported 9261154 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 859708/2824599 (30.4%)
+	reads: 5423419/15703770 (34.5%)
+Multi-mapped placed with guidance (P):
+	sequences: 629602/2824599 (22.3%)
+	reads: 4882493/15703770 (31.1%)
+Multi-mapped randomly placed (R):
+	sequences: 386229/2824599 (13.7%)
+	reads: 1734657/15703770 (11.0%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 128853/2824599 (4.6%)
+	reads: 614343/15703770 (3.9%)
+Not mapped (no hits)(N):
+	sequences: 820207/2824599 (29.0%)
+	reads: 3048858/15703770 (19.4%)
+
+Tue 10 Dec 2024 08:16:32 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/34-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 2682130
+# reads with at least one alignment: 1829283 (68.20%)
+# reads that failed to align: 852847 (31.80%)
+Reported 7506414 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 1054451/3373653 (31.3%)
+	reads: 7018684/18959577 (37.0%)
+Multi-mapped placed with guidance (P):
+	sequences: 750429/3373653 (22.2%)
+	reads: 5758705/18959577 (30.4%)
+Multi-mapped randomly placed (R):
+	sequences: 415513/3373653 (12.3%)
+	reads: 1924747/18959577 (10.2%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 121311/3373653 (3.6%)
+	reads: 543368/18959577 (2.9%)
+Not mapped (no hits)(N):
+	sequences: 1031949/3373653 (30.6%)
+	reads: 3714073/18959577 (19.6%)
+
+Tue 10 Dec 2024 08:17:52 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/35-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 3 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 2871340
+# reads with at least one alignment: 1997649 (69.57%)
+# reads that failed to align: 873691 (30.43%)
+Reported 8057045 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 812433/2682130 (30.3%)
+	reads: 5211636/14222039 (36.6%)
+Multi-mapped placed with guidance (P):
+	sequences: 562802/2682130 (21.0%)
+	reads: 4290462/14222039 (30.2%)
+Multi-mapped randomly placed (R):
+	sequences: 346381/2682130 (12.9%)
+	reads: 1429036/14222039 (10.0%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 107667/2682130 (4.0%)
+	reads: 484955/14222039 (3.4%)
+Not mapped (no hits)(N):
+	sequences: 852847/2682130 (31.8%)
+	reads: 2805950/14222039 (19.7%)
+
+Tue 10 Dec 2024 08:19:02 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/363-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 3 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3065997
+# reads with at least one alignment: 2163860 (70.58%)
+# reads that failed to align: 902137 (29.42%)
+Reported 9335108 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 899467/2871340 (31.3%)
+	reads: 6184248/17268543 (35.8%)
+Multi-mapped placed with guidance (P):
+	sequences: 621797/2871340 (21.7%)
+	reads: 5620155/17268543 (32.5%)
+Multi-mapped randomly placed (R):
+	sequences: 364872/2871340 (12.7%)
+	reads: 1712497/17268543 (9.9%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 111513/2871340 (3.9%)
+	reads: 529612/17268543 (3.1%)
+Not mapped (no hits)(N):
+	sequences: 873691/2871340 (30.4%)
+	reads: 3222031/17268543 (18.7%)
+
+Tue 10 Dec 2024 08:20:14 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/367-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 4504581
+# reads with at least one alignment: 3095877 (68.73%)
+# reads that failed to align: 1408704 (31.27%)
+Reported 12393101 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 933180/3065997 (30.4%)
+	reads: 5502263/15680761 (35.1%)
+Multi-mapped placed with guidance (P):
+	sequences: 688353/3065997 (22.5%)
+	reads: 5087545/15680761 (32.4%)
+Multi-mapped randomly placed (R):
+	sequences: 401177/3065997 (13.1%)
+	reads: 1578755/15680761 (10.1%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 141150/3065997 (4.6%)
+	reads: 554667/15680761 (3.5%)
+Not mapped (no hits)(N):
+	sequences: 902137/3065997 (29.4%)
+	reads: 2957531/15680761 (18.9%)
+
+Tue 10 Dec 2024 08:21:32 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/376-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 5 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3060928
+# reads with at least one alignment: 2089172 (68.25%)
+# reads that failed to align: 971756 (31.75%)
+Reported 8483476 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 1381652/4504581 (30.7%)
+	reads: 10778375/29730374 (36.3%)
+Multi-mapped placed with guidance (P):
+	sequences: 1056376/4504581 (23.5%)
+	reads: 9375217/29730374 (31.5%)
+Multi-mapped randomly placed (R):
+	sequences: 488683/4504581 (10.8%)
+	reads: 2330402/29730374 (7.8%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 169166/4504581 (3.8%)
+	reads: 1238612/29730374 (4.2%)
+Not mapped (no hits)(N):
+	sequences: 1408704/4504581 (31.3%)
+	reads: 6007768/29730374 (20.2%)
+
+Tue 10 Dec 2024 08:23:02 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/460-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3024117
+# reads with at least one alignment: 2111801 (69.83%)
+# reads that failed to align: 912316 (30.17%)
+Reported 8564690 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 954008/3060928 (31.2%)
+	reads: 5376280/14767899 (36.4%)
+Multi-mapped placed with guidance (P):
+	sequences: 635455/3060928 (20.8%)
+	reads: 4401137/14767899 (29.8%)
+Multi-mapped randomly placed (R):
+	sequences: 374775/3060928 (12.2%)
+	reads: 1295871/14767899 (8.8%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 124934/3060928 (4.1%)
+	reads: 507564/14767899 (3.4%)
+Not mapped (no hits)(N):
+	sequences: 971756/3060928 (31.7%)
+	reads: 3187047/14767899 (21.6%)
+
+Tue 10 Dec 2024 08:24:15 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/485-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3574175
+# reads with at least one alignment: 2481529 (69.43%)
+# reads that failed to align: 1092646 (30.57%)
+Reported 10574957 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 945245/3024117 (31.3%)
+	reads: 5525495/15645649 (35.3%)
+Multi-mapped placed with guidance (P):
+	sequences: 666256/3024117 (22.0%)
+	reads: 5102646/15645649 (32.6%)
+Multi-mapped randomly placed (R):
+	sequences: 379132/3024117 (12.5%)
+	reads: 1430133/15645649 (9.1%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 121168/3024117 (4.0%)
+	reads: 491802/15645649 (3.1%)
+Not mapped (no hits)(N):
+	sequences: 912316/3024117 (30.2%)
+	reads: 3095573/15645649 (19.8%)
+
+Tue 10 Dec 2024 08:25:23 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/501-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 4368376
+# reads with at least one alignment: 2877882 (65.88%)
+# reads that failed to align: 1490494 (34.12%)
+Reported 13016301 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 1089499/3574175 (30.5%)
+	reads: 6235317/17161714 (36.3%)
+Multi-mapped placed with guidance (P):
+	sequences: 796338/3574175 (22.3%)
+	reads: 5272243/17161714 (30.7%)
+Multi-mapped randomly placed (R):
+	sequences: 431289/3574175 (12.1%)
+	reads: 1532386/17161714 (8.9%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 164403/3574175 (4.6%)
+	reads: 704647/17161714 (4.1%)
+Not mapped (no hits)(N):
+	sequences: 1092646/3574175 (30.6%)
+	reads: 3417121/17161714 (19.9%)
+
+Tue 10 Dec 2024 08:26:45 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/71-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 5 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+# reads processed: 3373635
+# reads with at least one alignment: 2167948 (64.26%)
+# reads that failed to align: 1205687 (35.74%)
+Reported 9080512 alignments
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 1264120/4368376 (28.9%)
+	reads: 6496868/18881184 (34.4%)
+Multi-mapped placed with guidance (P):
+	sequences: 920721/4368376 (21.1%)
+	reads: 5142586/18881184 (27.2%)
+Multi-mapped randomly placed (R):
+	sequences: 454224/4368376 (10.4%)
+	reads: 1532582/18881184 (8.1%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 238817/4368376 (5.5%)
+	reads: 1308637/18881184 (6.9%)
+Not mapped (no hits)(N):
+	sequences: 1490494/4368376 (34.1%)
+	reads: 4400511/18881184 (23.3%)
+
+Tue 10 Dec 2024 08:28:27 -0800 PST
+Aligning /home/shared/8TB_HDD_01/sam/gitrepos/RobertsLab/project-clam-oa/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/88-fastp-adapters-polyG-31bp-merged_condensed.fa
+First pass alignment with bowtie using 40 threads
+Second pass - placing multimappers using 40 threads to process 4 chunks
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+
+Converting to sorted bam format
+Uniquely mapped (U):
+	sequences: 940864/3373635 (27.9%)
+	reads: 6178572/18003539 (34.3%)
+Multi-mapped placed with guidance (P):
+	sequences: 691468/3373635 (20.5%)
+	reads: 5475445/18003539 (30.4%)
+Multi-mapped randomly placed (R):
+	sequences: 405508/3373635 (12.0%)
+	reads: 1633850/18003539 (9.1%)
+Very highly multi-mapped (>=20 hits)(H):
+	sequences: 130108/3373635 (3.9%)
+	reads: 574538/18003539 (3.2%)
+Not mapped (no hits)(N):
+	sequences: 1205687/3373635 (35.7%)
+	reads: 4141134/18003539 (23.0%)
+
+Tue 10 Dec 2024 08:29:49 -0800 PST
+Merging and indexing alignments
+
+Tue 10 Dec 2024 08:33:26 -0800 PST
+Defining small RNA clusters de novo
+With 334843524 total reads and mincov of 1 reads per million, the min read depth is 335
+
+Tue 10 Dec 2024 08:34:15 -0800 PST
+Analyzing cluster properties using 40 threads
+# reads processed: 48885
+# reads with at least one alignment: 1155 (2.36%)
+# reads that failed to align: 47730 (97.64%)
+Reported 24638 alignments
+[bam_sort_core] merging from 0 files and 40 in-memory blocks...
+
+Tue 10 Dec 2024 08:35:31 -0800 PST
+ Completed
+
+Tue 10 Dec 2024 08:35:31 -0800 PST
+Searching for valid microRNA loci
+Aligning known_miRNAs sequences to genome
+
+Screening of possible microRNAs from user provided known_miRNAs
+
+Screening of possible de novo microRNAs
+
+Tue 10 Dec 2024 08:36:50 -0800 PST
+Analyzing cluster properties using 40 threads
+
+Tue 10 Dec 2024 08:36:50 -0800 PST
+ Completed
+
+Writing final files
+
+Found a total of 37 MIRNA loci
+
+
+Non-MIRNA loci by DicerCall:
+N 33525
+22 60
+21 18
+23 17
+24 9
+
+Creating visualizations of microRNA loci with strucVis
+<<< WARNING >>>
+Do not rely on these results alone to annotate new MIRNA loci!
+The false positive rate for de novo MIRNA identification is low, but NOT ZERO
+Insepct each mirna locus, especially the strucVis output, and see
+https://doi.org/10.1105/tpc.17.00851 , https://doi.org/10.1093/nar/gky1141
+
+Tue 10 Dec 2024 08:37:06 -0800 PST
+Run Completed!
+
+real	52m22.645s
+user	672m59.895s
+sys	196m42.848s
