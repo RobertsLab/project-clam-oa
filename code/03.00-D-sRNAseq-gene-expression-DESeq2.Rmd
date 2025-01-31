@@ -79,16 +79,6 @@ metadata <- read.csv("../data/ManilaOA2023_shortRNASeq_Meta.csv", header = TRUE)
 str(metadata)
 ```
 
-## Filter metadata for unique sample names
-
-Obtain one entry per `Clam_Num` and their corresponding `Treatment`
-```{r filter-metadata, eval=TRUE}
-sample_treatment_df <- metadata %>%
-  distinct(Clam_Num, Treatment)
-
-str(sample_treatment_df)
-```
-
 ## Extract sample names
 ```{r extract-sample-names, eval=TRUE}
 sample_names <- colnames(srna_seq_counts) %>%
