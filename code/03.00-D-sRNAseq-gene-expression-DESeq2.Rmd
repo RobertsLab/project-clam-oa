@@ -74,7 +74,7 @@ str(srna_seq_counts)
 ## Read in metdata CSV
 ```{r read-metadata, eval=TRUE}
 # Load metadata
-metadata <- read.csv("../data/rphil_OA_RNA_metadata.csv", header = TRUE)
+metadata <- read.csv("../data/ManilaOA2023_shortRNASeq_Meta.csv", header = TRUE)
 
 str(metadata)
 ```
@@ -164,3 +164,6 @@ str(srna_seq_counts_matrix_sorted)
 ```{r check-rownames}
 all(rownames(coldata) == colnames(srna_seq_counts_matrix_sorted))
 ```
+
+
+
