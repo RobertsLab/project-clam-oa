@@ -63,9 +63,9 @@ Counts generated in `02.00-ShortStack-31bp-fastp-merged`.
 
 ```{r load-sRNA-counts}
 # Read in sRNA counts data
-srna_seq_counts <- read_delim("../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt", delim="\t")
+srna_seq_counts_shortstack <- read_delim("../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt", delim="\t")
 
-str(srna_seq_counts)
+str(srna_seq_counts_shortstack)
 
 ```
 
@@ -81,25 +81,26 @@ str(metadata)
 
 ## Extract sample names
 ```{r extract-sample-names, eval=TRUE}
-sample_names <- colnames(srna_seq_counts) %>%
+sample_names <- colnames(srna_seq_counts_shortstack) %>%
   str_subset("^\\d+-") %>%
   str_extract("^\\d+")
 
 str(sample_names)
 ```
 
-## Extract sequenced samples from metadata
-```{r metadata-sequenced-samples, eval=TRUE}
-sequenced_sample_treatment_df <- sample_treatment_df %>%
-  filter(Clam_Num %in% sample_names)
+## Select sample namd and treatment
+```{r filter-metadata, eval=TRUE}
+sample_treatment_df <- metadata %>%
+  select(ID_simple, treatment)
 
 # Set sample names as rownames
-rownames(sequenced_sample_treatment_df) <- sequenced_sample_treatment_df$Clam_Num
+rownames(sample_treatment_df) <- sample_treatment_df$ID_simple
 
-sequenced_sample_treatment_df$Clam_Num <- NULL
+sample_treatment_df$ID_simple <- NULL
 
-str(sequenced_sample_treatment_df)
+str(sample_treatment_df)
 ```
+
 
 ## Write DEseq coldata to file
 ```{r write-deseq-coldata, eval=TRUE}
