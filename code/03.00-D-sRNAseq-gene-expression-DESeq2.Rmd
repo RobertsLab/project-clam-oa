@@ -92,7 +92,7 @@ sample_names <- colnames(srna_seq_counts_shortstack) %>%
 str(sample_names)
 ```
 
-## Select sample namd and treatment
+## Select sample name and treatment
 ```{r filter-metadata, eval=TRUE}
 sample_treatment_df <- metadata %>%
   select(ID_simple, treatment)
@@ -126,10 +126,10 @@ write.table(
 coldata <- sample_treatment_df
 
 # Remove excess portions of sample column names to just "sample###"
-colnames(srna_seq_counts) <- sub("-fastp-adapters-polyG-31bp-merged_condensed", "", colnames(srna_seq_counts))
+colnames(srna_seq_counts_shortstack) <- sub("-fastp-adapters-polyG-31bp-merged_condensed", "", colnames(srna_seq_counts_shortstack))
 
 # Keep just the counts and cluster names as matrix
-srna_seq_counts_matrix <- as.matrix(srna_seq_counts %>% select(-Coords, -MIRNA) %>% column_to_rownames(var = "Name"))
+srna_seq_counts_matrix <- as.matrix(srna_seq_counts_shortstack %>% select(-Coords, -MIRNA) %>% column_to_rownames(var = "Name"))
 
 str(srna_seq_counts_matrix)
 ```
@@ -151,6 +151,7 @@ ord <- match(rownames(sample_treatment_df), colnames(srna_seq_counts_matrix))
 
 srna_seq_counts_matrix_sorted <- srna_seq_counts_matrix[, ord]
 
+str(srna_seq_counts_matrix_sorted)
 ```
 
 ## Verify rownames match
@@ -169,7 +170,7 @@ dds
 
 ```
 
-## Add cluster columun as "gene" feature
+## Add cluster column as "gene" feature
 ```{r add-cluaster-as-gene-feature, eval=TRUE}
 featureData <- data.frame(gene=rownames(srna_seq_counts_matrix_sorted))
 mcols(dds) <- DataFrame(mcols(dds), featureData)
@@ -201,6 +202,12 @@ table(res$padj < fdr)
 ## Write DDS results tables to CSVs
 ```{r write-dds-results-table, eval=TRUE}
 write.csv(res, file = paste0(output_dir, "deseq2", ".table.csv"), row.names = TRUE, quote = FALSE)
+
+# Subset based on adjusted p-value
+resSig <- subset(res, padj < fdr)
+
+resSig
+write.csv(resSig, file = paste0(output_dir, "deseq2",".fdr-", fdr, ".table.csv"), row.names = TRUE, quote = FALSE)
 ```
 
 # Variance stabilizing transformations (VST)
