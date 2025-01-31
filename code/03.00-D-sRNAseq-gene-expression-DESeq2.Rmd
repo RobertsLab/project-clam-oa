@@ -25,29 +25,27 @@ bibliography: references.bib
 
 # Background
 
-This will run [DEseq2](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html) to determine if any of the miRNAs identified in [02.00-ShortStack-31bp-fastp-merged.md](https://github.com/RobertsLab/project-clam-oa/blob/2616d45a5a0bbef23081c5824bfe5bad6b89d227/code/02.00-ShortStack-31bp-fastp-merged.md) analysis are differentially expressed between control/treatment.
+This will run [DEseq2](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html) [@love2014] to determine if any of the miRNAs identified in [02.00-ShortStack-31bp-fastp-merged.md](https://github.com/RobertsLab/project-clam-oa/blob/2616d45a5a0bbef23081c5824bfe5bad6b89d227/code/02.00-ShortStack-31bp-fastp-merged.md) analysis are differentially expressed between control/treatment.
 
-::: {.callout-note}
+::: callout-note
 ShortStack identified 37 miRNAs.
 :::
 
 ## Inputs
 
-- [`Counts.txt`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt): ShortStack counts matrix. Includes all clusters, including those that were _not_ categorized as miRNAs.
+-   [`Counts.txt`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt): ShortStack counts matrix. Includes all clusters, including those that were *not* categorized as miRNAs.
 
-- [`DESeq2-coldata.tab`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab): Two column table with sample ID and treatment. This file is also an output from this notebook.
+-   [`DESeq2-coldata.tab`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab): Two column table with sample ID and treatment. This file is also an output from this notebook.
 
-- [ManilaOA2023_shortRNASeq_Meta.csv](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/data/ManilaOA2023_shortRNASeq_Meta.csv): Metadata file for this sRNA-seq data.
-
-
+-   [ManilaOA2023_shortRNASeq_Meta.csv](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/data/ManilaOA2023_shortRNASeq_Meta.csv): Metadata file for this sRNA-seq data.
 
 ## Outputs
 
-- [`DESeq2-coldata.tab`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab): Two column table with sample ID and treatment. Needed as input to DEseq2.
+-   [`DESeq2-coldata.tab`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab): Two column table with sample ID and treatment. Needed as input to DEseq2.
 
-- [`deseq2.table.csv`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.table.csv): DEseq2 output table containing mean expression, fold change in expression, and adjusted p-values for all input samples.
+-   [`deseq2.table.csv`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.table.csv): DEseq2 output table containing mean expression, fold change in expression, and adjusted p-values for all input samples.
 
-- [deseq2.fdr-0.05.table.csv](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.fdr-0.05.table.csv): Subset of DEseq2 output table of all miRNA clusters ("genes") having adjusted p-values (fdr) <= 0.05.
+-   [deseq2.fdr-0.05.table.csv](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.fdr-0.05.table.csv): Subset of DEseq2 output table of all miRNA clusters ("genes") having adjusted p-values (fdr) \<= 0.05.
 
 ```{r setup, include=FALSE}
 library("RColorBrewer")
@@ -65,9 +63,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-
 # Set R variables
-```{r set-variables}
+
+```{r set-variables, eval=TRUE}
 # Define the output directory path
 output_dir <- "../output/03.00-D-sRNAseq-gene-expression-DESeq2/"
 
@@ -86,7 +84,7 @@ Counts generated in `02.00-ShortStack-31bp-fastp-merged`.
 
 ## Select only miRNAs IDd by ShortStack
 
-```{r load-sRNA-counts}
+```{r load-sRNA-counts, eval=TRUE}
 # Read in sRNA counts data
 srna_seq_counts_shortstack <- read_delim("../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt", delim="\t")
 
@@ -98,7 +96,8 @@ str(srna_seq_counts_shortstack)
 
 # Create DESeq2 Column Data
 
-## Read in metdata CSV
+## Read in metadata CSV
+
 ```{r read-metadata, eval=TRUE}
 # Load metadata
 metadata <- read.csv("../data/ManilaOA2023_shortRNASeq_Meta.csv", header = TRUE)
@@ -107,6 +106,7 @@ str(metadata)
 ```
 
 ## Extract sample names
+
 ```{r extract-sample-names, eval=TRUE}
 sample_names <- colnames(srna_seq_counts_shortstack) %>%
   str_subset("^\\d+-") %>%
@@ -116,6 +116,7 @@ str(sample_names)
 ```
 
 ## Select sample name and treatment
+
 ```{r filter-metadata, eval=TRUE}
 sample_treatment_df <- metadata %>%
   select(ID_simple, treatment)
@@ -128,8 +129,8 @@ sample_treatment_df$ID_simple <- NULL
 str(sample_treatment_df)
 ```
 
-
 ## Write DEseq coldata to file
+
 ```{r write-deseq-coldata, eval=TRUE}
 write.table(
   sample_treatment_df,
@@ -141,11 +142,11 @@ write.table(
 
 ```
 
-
 # Count data munging
 
 ## Fix col names and convert to matrix
-```{r sRNA-count-data-munging}
+
+```{r sRNA-count-data-munging, eval=TRUE}
 coldata <- sample_treatment_df
 
 # Remove excess portions of sample column names to just "sample###"
@@ -158,7 +159,8 @@ str(srna_seq_counts_matrix)
 ```
 
 ## Take only samples present in coldata
-```{r, eval=TRUE}
+
+```{r extract-samples, eval=TRUE}
 
 common_cols <- intersect(colnames(srna_seq_counts_matrix),
                          rownames(sample_treatment_df))
@@ -169,6 +171,7 @@ str(srna_seq_counts_matrix)
 ```
 
 ## Reorder matrix cols to match coldata
+
 ```{r reorder-matrix-cols, eval=TRUE}
 ord <- match(rownames(sample_treatment_df), colnames(srna_seq_counts_matrix))
 
@@ -178,6 +181,7 @@ str(srna_seq_counts_matrix_sorted)
 ```
 
 ## Verify rownames match
+
 ```{r check-rownames, eval=TRUE}
 all(rownames(coldata) == colnames(srna_seq_counts_matrix_sorted))
 ```
@@ -185,6 +189,7 @@ all(rownames(coldata) == colnames(srna_seq_counts_matrix_sorted))
 # Create DESeq2 data set
 
 ## Initialize DEseq2 data set
+
 ```{r create-deseq2-data-set, eval=TRUE}
 dds <- DESeqDataSetFromMatrix(countData = srna_seq_counts_matrix_sorted,
                               colData = coldata,
@@ -194,12 +199,15 @@ dds
 ```
 
 ## Add cluster column as "gene" feature
+
 ```{r add-cluaster-as-gene-feature, eval=TRUE}
 featureData <- data.frame(gene=rownames(srna_seq_counts_matrix_sorted))
 mcols(dds) <- DataFrame(mcols(dds), featureData)
 mcols(dds)
 ```
+
 ## Set factor levels
+
 ```{r set-factor-levels, eval=TRUE}
 dds$treatment <- factor(dds$treatment, levels = c("control", "treatment"))
 ```
@@ -207,11 +215,13 @@ dds$treatment <- factor(dds$treatment, levels = c("control", "treatment"))
 # DESeq analysis
 
 ## DEseq
+
 ```{r deseq, eval=TRUE}
 dds <- DESeq(dds)
 ```
 
 ## DEseq Results
+
 ```{r assign-results, eval=TRUE}
 
 res <- results(dds, alpha = fdr, lfcThreshold = log2fc)
@@ -222,7 +232,9 @@ summary(res)
 
 table(res$padj < fdr)
 ```
+
 ## Write DDS results tables to CSVs
+
 ```{r write-dds-results-table, eval=TRUE}
 write.csv(res, file = paste0(output_dir, "deseq2", ".table.csv"), row.names = TRUE, quote = FALSE)
 
@@ -234,7 +246,9 @@ write.csv(resSig, file = paste0(output_dir, "deseq2",".fdr-", fdr, ".table.csv")
 ```
 
 # Variance stabilizing transformations (VST)
-- Here we transform counts using a variance stabilizing transformation (VST), since we have many samples. 
+
+-   Here we transform counts using a variance stabilizing transformation (VST), since we have many samples.
+
 ```{r VST, eval=TRUE}
 vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
 ```
@@ -242,6 +256,7 @@ vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
 # Plotting
 
 ## Sample distances
+
 ```{r plot-sample-distances}
 sampleDists <- dist(t(assay(vsd)))
 
@@ -260,23 +275,28 @@ pheatmap(sampleDistMatrix,
 ```
 
 ## PCA
+
 Visualize sample clustering via PCA (after transformation)
+
 ```{r pca, eval=TRUE}
 # PCA with points color coded by time point 
 plotPCA(vsd, intgroup = c("treatment"))
 ```
 
-## Heatmap top 20
-```{r heatmap}
-top20_counts <- order(rowMeans(counts(dds,normalized=TRUE)),
-                decreasing=TRUE)[1:20]
+## Heatmap top 40
+
+```{r heatmap, eval=TRUE}
+top40_counts <- order(rowMeans(counts(dds,normalized=TRUE)),
+                decreasing=TRUE)[1:40]
 
 annotation = colData(dds) %>% as.data.frame() %>% select(treatment)
 
-pheatmap(assay(vsd)[top20_counts,], 
+pheatmap(assay(vsd)[top40_counts,], 
          cluster_rows=FALSE, 
          show_rownames=TRUE,
          cluster_cols=TRUE, 
          annotation_col = annotation)
 
 ```
+
+# REFERENCES
