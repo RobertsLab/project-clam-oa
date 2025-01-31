@@ -105,7 +105,7 @@ str(sample_treatment_df)
 ## Write DEseq coldata to file
 ```{r write-deseq-coldata, eval=TRUE}
 write.table(
-  sequenced_sample_treatment_df,
+  sample_treatment_df,
   file = "../output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab",
   sep = "\t",
   quote = FALSE,
@@ -119,7 +119,7 @@ write.table(
 
 ## Fix col names and convert to matrix
 ```{r sRNA-count-data-munging}
-coldata <- sequenced_sample_treatment_df
+coldata <- sample_treatment_df
 
 # Remove excess portions of sample column names to just "sample###"
 colnames(srna_seq_counts) <- sub("-fastp-adapters-polyG-31bp-merged_condensed", "", colnames(srna_seq_counts))
@@ -134,7 +134,7 @@ str(srna_seq_counts_matrix)
 ```{r, eval=TRUE}
 
 common_cols <- intersect(colnames(srna_seq_counts_matrix),
-                         rownames(sequenced_sample_treatment_df))
+                         rownames(sample_treatment_df))
 
 srna_seq_counts_matrix <- srna_seq_counts_matrix[, common_cols]
 
@@ -143,11 +143,9 @@ str(srna_seq_counts_matrix)
 
 ## Reorder matrix cols to match coldata
 ```{r reorder-matrix-cols, eval=TRUE}
-ord <- match(as.character(sequenced_sample_treatment_df$Clam_Num),
-             colnames(srna_seq_counts_matrix))
-srna_seq_counts_matrix_sorted <- srna_seq_counts_matrix[, ord]
+ord <- match(rownames(sample_treatment_df), colnames(srna_seq_counts_matrix))
 
-str(srna_seq_counts_matrix_sorted)
+srna_seq_counts_matrix <- srna_seq_counts_matrix[, ord]
 
 ```
 
