@@ -198,5 +198,8 @@ summary(res)
 
 table(res$padj < fdr)
 ```
-
+## Write DDS results tables to CSVs
+```{r write-dds-results-table, eval=TRUE}
+write.csv(res, file = paste0(output_dir, "deseq2", ".table.csv"), row.names = TRUE, quote = FALSE)
+```
 
