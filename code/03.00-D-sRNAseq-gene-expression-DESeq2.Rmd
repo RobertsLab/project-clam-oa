@@ -61,9 +61,13 @@ Load in the sRNA count matrix generated using ShortStack 4.1.1. Keep in mind thi
 
 Counts generated in `02.00-ShortStack-31bp-fastp-merged`.
 
+## Select only miRNAs IDd by ShortStack
+
 ```{r load-sRNA-counts}
 # Read in sRNA counts data
 srna_seq_counts_shortstack <- read_delim("../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt", delim="\t")
+
+srna_seq_counts_shortstack <- srna_seq_counts_shortstack %>% filter(MIRNA == "Y")
 
 str(srna_seq_counts_shortstack)
 
