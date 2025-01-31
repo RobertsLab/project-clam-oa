@@ -149,14 +149,54 @@ str(srna_seq_counts_matrix)
 ```{r reorder-matrix-cols, eval=TRUE}
 ord <- match(rownames(sample_treatment_df), colnames(srna_seq_counts_matrix))
 
-srna_seq_counts_matrix <- srna_seq_counts_matrix[, ord]
+srna_seq_counts_matrix_sorted <- srna_seq_counts_matrix[, ord]
 
 ```
 
 ## Verify rownames match
-```{r check-rownames}
+```{r check-rownames, eval=TRUE}
 all(rownames(coldata) == colnames(srna_seq_counts_matrix_sorted))
 ```
 
+# Create DESeq2 data set
+
+## Initialize DEseq2 data set
+```{r create-deseq2-data-set, eval=TRUE}
+dds <- DESeqDataSetFromMatrix(countData = srna_seq_counts_matrix_sorted,
+                              colData = coldata,
+                              design = ~ treatment)
+dds
+
+```
+
+## Add cluster columun as "gene" feature
+```{r add-cluaster-as-gene-feature, eval=TRUE}
+featureData <- data.frame(gene=rownames(srna_seq_counts_matrix_sorted))
+mcols(dds) <- DataFrame(mcols(dds), featureData)
+mcols(dds)
+```
+## Set factor levels
+```{r set-factor-levels, eval=TRUE}
+dds$treatment <- factor(dds$treatment, levels = c("control", "treatment"))
+```
+
+# DESeq analysis
+
+## DEseq
+```{r deseq, eval=TRUE}
+dds <- DESeq(dds)
+```
+
+## DEseq Results
+```{r assign-results, eval=TRUE}
+
+res <- results(dds, alpha = fdr, lfcThreshold = log2fc)
+
+res
+
+summary(res)
+
+table(res$padj < fdr)
+```
 
 
