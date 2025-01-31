@@ -23,6 +23,9 @@ output:
 bibliography: references.bib
 ---
 
+# Background
+
+
 ```{r setup, include=FALSE}
 library("RColorBrewer")
 library("DESeq2")
@@ -37,4 +40,100 @@ knitr::opts_chunk$set(
   message = FALSE,     # Hide messages
   comment = ""         # Prevents appending '##' to beginning of lines in code output
 )
+```
+
+
+# Set R variables
+```{r set-variables}
+# Define the output directory path
+output_dir <- "../output/03.00-D-sRNAseq-gene-expression-DESeq2/"
+
+# Set desired false discovery rate threshold (i.e. adjusted p-value, padj)
+fdr <- 0.05
+
+# Set log2 fold change threshold (a value of '1' is equal to a fold change of '2')
+log2fc <- 1
+```
+
+# Load count data
+
+Load in the sRNA count matrix generated using ShortStack 4.1.1. Keep in mind this data includes counts of all sRNAs, not just miRNAs.
+
+Counts generated in `02.00-ShortStack-31bp-fastp-merged`.
+
+```{r load-sRNA-counts}
+# Read in sRNA counts data
+srna_seq_counts <- read_delim("../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt", delim="\t")
+
+str(srna_seq_counts)
+
+```
+
+# Create DESeq2 Column Data
+
+## Read in metdata CSV
+```{r read-metadata, eval=TRUE}
+# Load metadata
+metadata <- read.csv("../data/rphil_OA_RNA_metadata.csv", header = TRUE)
+
+str(metadata)
+```
+
+## Filter metadata for unique sample names
+
+Obtain one entry per `Clam_Num` and their corresponding `Treatment`
+```{r filter-metadata, eval=TRUE}
+sample_treatment_df <- metadata %>%
+  distinct(Clam_Num, Treatment)
+
+str(sample_treatment_df)
+```
+
+## Extract sample names
+```{r extract-sample-names, eval=TRUE}
+sample_names <- colnames(srna_seq_counts) %>%
+  str_subset("^\\d+-") %>%
+  str_extract("^\\d+")
+
+str(sample_names)
+```
+
+## Extract sequenced samples from metadata
+```{r metadata-sequenced-samples, eval=TRUE}
+sequenced_sample_treatment_df <- sample_treatment_df %>%
+  filter(Clam_Num %in% sample_names)
+
+# Set sample names as rownames
+rownames(sequenced_sample_treatment_df) <- sequenced_sample_treatment_df$Clam_Num
+
+sequenced_sample_treatment_df$Clam_Num <- NULL
+
+str(sequenced_sample_treatment_df)
+```
+
+## Write DEseq coldata to file
+```{r write-deseq-coldata, eval=TRUE}
+write.table(
+  sequenced_sample_treatment_df,
+  file = "../output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab",
+  sep = "\t",
+  quote = FALSE,
+  col.names = NA
+)
+
+```
+
+
+# Count data munging
+
+```{r sRNA-count-data-munging}
+coldata <- sequenced_sample_treatment_df
+
+# Remove excess portions of sample column names to just "sample###"
+colnames(srna_seq_counts) <- sub("-fastp-adapters-polyG-31bp-merged_condensed", "", colnames(srna_seq_counts))
+
+# Keep just the counts and cluster names as matrix
+srna_seq_counts_matrix <- as.matrix(srna_seq_counts %>% select(-Coords, -MIRNA) %>% column_to_rownames(var = "Name"))
+
+str(srna_seq_counts_no_coords)
 ```
