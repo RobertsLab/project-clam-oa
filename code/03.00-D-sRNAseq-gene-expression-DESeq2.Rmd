@@ -126,6 +126,7 @@ write.table(
 
 # Count data munging
 
+## Fix col names and convert to matrix
 ```{r sRNA-count-data-munging}
 coldata <- sequenced_sample_treatment_df
 
@@ -135,5 +136,31 @@ colnames(srna_seq_counts) <- sub("-fastp-adapters-polyG-31bp-merged_condensed", 
 # Keep just the counts and cluster names as matrix
 srna_seq_counts_matrix <- as.matrix(srna_seq_counts %>% select(-Coords, -MIRNA) %>% column_to_rownames(var = "Name"))
 
-str(srna_seq_counts_no_coords)
+str(srna_seq_counts_matrix)
+```
+
+## Take only samples present in coldata
+```{r, eval=TRUE}
+
+common_cols <- intersect(colnames(srna_seq_counts_matrix),
+                         rownames(sequenced_sample_treatment_df))
+
+srna_seq_counts_matrix <- srna_seq_counts_matrix[, common_cols]
+
+str(srna_seq_counts_matrix)
+```
+
+## Reorder matrix cols to match coldata
+```{r reorder-matrix-cols, eval=TRUE}
+ord <- match(as.character(sequenced_sample_treatment_df$Clam_Num),
+             colnames(srna_seq_counts_matrix))
+srna_seq_counts_matrix_sorted <- srna_seq_counts_matrix[, ord]
+
+str(srna_seq_counts_matrix_sorted)
+
+```
+
+## Verify rownames match
+```{r check-rownames}
+all(rownames(coldata) == colnames(srna_seq_counts_matrix_sorted))
 ```
