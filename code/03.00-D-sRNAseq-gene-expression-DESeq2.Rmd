@@ -203,3 +203,50 @@ table(res$padj < fdr)
 write.csv(res, file = paste0(output_dir, "deseq2", ".table.csv"), row.names = TRUE, quote = FALSE)
 ```
 
+# Variance stabilizing transformations (VST)
+- Here we transform counts using a variance stabilizing transformation (VST), since we have many samples. 
+```{r VST, eval=TRUE}
+vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
+```
+
+# Plotting
+
+## Sample distances
+```{r plot-sample-distances}
+sampleDists <- dist(t(assay(vsd)))
+
+sampleDistMatrix <- as.matrix( sampleDists )
+
+rownames(sampleDistMatrix) <- paste( vsd$colony.id, vsd$time.point, sep = " - " )
+
+colnames(sampleDistMatrix) <- NULL
+
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows = sampleDists,
+         clustering_distance_cols = sampleDists,
+         col = colors)
+```
+
+## PCA
+Visualize sample clustering via PCA (after transformation)
+```{r pca, eval=TRUE}
+# PCA with points color coded by time point 
+plotPCA(vsd, intgroup = c("treatment"))
+```
+
+## Heatmap top 20
+```{r heatmap}
+top20_counts <- order(rowMeans(counts(dds,normalized=TRUE)),
+                decreasing=TRUE)[1:20]
+
+annotation = colData(dds) %>% as.data.frame() %>% select(treatment)
+
+pheatmap(assay(vsd)[top20_counts,], 
+         cluster_rows=FALSE, 
+         show_rownames=TRUE,
+         cluster_cols=TRUE, 
+         annotation_col = annotation)
+
+```
