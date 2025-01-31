@@ -25,6 +25,29 @@ bibliography: references.bib
 
 # Background
 
+This will run [DEseq2](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html) to determine if any of the miRNAs identified in [02.00-ShortStack-31bp-fastp-merged.md](https://github.com/RobertsLab/project-clam-oa/blob/2616d45a5a0bbef23081c5824bfe5bad6b89d227/code/02.00-ShortStack-31bp-fastp-merged.md) analysis are differentially expressed between control/treatment.
+
+::: {.callout-note}
+ShortStack identified 37 miRNAs.
+:::
+
+## Inputs
+
+- [`Counts.txt`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt): ShortStack counts matrix. Includes all clusters, including those that were _not_ categorized as miRNAs.
+
+- [`DESeq2-coldata.tab`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab): Two column table with sample ID and treatment. This file is also an output from this notebook.
+
+- [ManilaOA2023_shortRNASeq_Meta.csv](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/data/ManilaOA2023_shortRNASeq_Meta.csv): Metadata file for this sRNA-seq data.
+
+
+
+## Outputs
+
+- [`DESeq2-coldata.tab`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab): Two column table with sample ID and treatment. Needed as input to DEseq2.
+
+- [`deseq2.table.csv`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.table.csv): DEseq2 output table containing mean expression, fold change in expression, and adjusted p-values for all input samples.
+
+- [deseq2.fdr-0.05.table.csv](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.fdr-0.05.table.csv): Subset of DEseq2 output table of all miRNA clusters ("genes") having adjusted p-values (fdr) <= 0.05.
 
 ```{r setup, include=FALSE}
 library("RColorBrewer")
