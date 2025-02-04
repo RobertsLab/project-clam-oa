@@ -3,6 +3,9 @@ title: "03.00-D-sRNAseq-gene-expression-DESeq2"
 author: "Sam White"
 date: "2025-01-31"
 output: 
+  github_document:
+    toc: true
+    number_sections: true
   bookdown::html_document2:
     theme: cosmo
     toc: true
@@ -10,9 +13,6 @@ output:
     number_sections: true
     code_folding: show
     code_download: true
-  github_document:
-    toc: true
-    number_sections: true
   html_document:
     theme: cosmo
     toc: true
@@ -26,6 +26,8 @@ bibliography: references.bib
 # Background
 
 This will run [DEseq2](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html) [@love2014] to determine if any of the miRNAs identified in [02.00-ShortStack-31bp-fastp-merged.md](https://github.com/RobertsLab/project-clam-oa/blob/2616d45a5a0bbef23081c5824bfe5bad6b89d227/code/02.00-ShortStack-31bp-fastp-merged.md) analysis are differentially expressed between control/treatment.
+
+This was initially run with a log2 fold change threshold set to 1 (which is equivalent to a 2-fold change in expression), but that returned 0 differentially expressed miRNAs. As such, this was run again with the log2 fold change threshold set to 0.
 
 ::: callout-note
 ShortStack identified 37 miRNAs.
@@ -45,7 +47,7 @@ ShortStack identified 37 miRNAs.
 
 -   [`deseq2.table.csv`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.table.csv): DEseq2 output table containing mean expression, fold change in expression, and adjusted p-values for all input samples.
 
--   [deseq2.fdr-0.05.table.csv](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.fdr-0.05.table.csv): Subset of DEseq2 output table of all miRNA clusters ("genes") having adjusted p-values (fdr) \<= 0.05.
+-   [deseq2.fdr-0.05.lfc-0.table.csv](https://github.com/RobertsLab/project-clam-oa/blob/3b23f7cfcdf9cef627556090518d60d685d881bd/output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.fdr-0.05.lfc-0.table.csv): Subset of DEseq2 output table of all miRNA clusters ("genes") having adjusted p-values (fdr) \<= 0.05 with log2 fold change cutoff set to 0.
 
 ```{r setup, include=FALSE}
 library("RColorBrewer")
@@ -245,6 +247,30 @@ resSig
 write.csv(resSig, file = paste0(output_dir, "deseq2",".fdr-", fdr, ".lfc-", log2fc, ".table.csv"), row.names = TRUE, quote = FALSE)
 ```
 
+## Identify Differentially Expressed miRNAs
+```{r differentially-expressed-RNAs, engine='bash', eval=TRUE}
+
+
+# Extract the first column values (excluding the header)
+clusters=$(cut -d',' -f1 "../output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.fdr-0.05.lfc-0.table.csv" | tail -n +2)
+
+# Loop through each cluster and search in the Results.txt file
+for cluster in $clusters; 
+do
+    grep "$cluster" "../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Results.txt"
+done
+
+echo ""
+echo "--------------------------------------------------------------"
+echo ""
+
+for cluster in $clusters; 
+do
+    grep "$cluster" "../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Results.txt" \
+    | awk '{print $21}'
+done
+```
+
 # Variance stabilizing transformations (VST)
 
 -   Here we transform counts using a variance stabilizing transformation (VST), since we have many samples.
@@ -283,11 +309,11 @@ Visualize sample clustering via PCA (after transformation)
 plotPCA(vsd, intgroup = c("treatment"))
 ```
 
-## Heatmap top 40
+## Heatmap of all 37 ShortStack miRNAs
 
 ```{r heatmap, eval=TRUE}
 top40_counts <- order(rowMeans(counts(dds,normalized=TRUE)),
-                decreasing=TRUE)[1:40]
+                decreasing=TRUE)[1:37]
 
 annotation = colData(dds) %>% as.data.frame() %>% select(treatment)
 
