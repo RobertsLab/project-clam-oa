@@ -73,7 +73,7 @@ output_dir <- "../output/03.00-D-sRNAseq-gene-expression-DESeq2/"
 fdr <- 0.05
 
 # Set log2 fold change threshold (a value of '1' is equal to a fold change of '2')
-log2fc <- 1
+log2fc <- 0
 ```
 
 # Load count data
@@ -242,7 +242,7 @@ write.csv(res, file = paste0(output_dir, "deseq2", ".table.csv"), row.names = TR
 resSig <- subset(res, padj < fdr)
 
 resSig
-write.csv(resSig, file = paste0(output_dir, "deseq2",".fdr-", fdr, ".table.csv"), row.names = TRUE, quote = FALSE)
+write.csv(resSig, file = paste0(output_dir, "deseq2",".fdr-", fdr, ".lfc-", log2fc, ".table.csv"), row.names = TRUE, quote = FALSE)
 ```
 
 # Variance stabilizing transformations (VST)
