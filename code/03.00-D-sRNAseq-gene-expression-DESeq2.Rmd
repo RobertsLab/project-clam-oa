@@ -88,11 +88,11 @@ Counts generated in `02.00-ShortStack-31bp-fastp-merged`.
 
 ```{r load-sRNA-counts, eval=TRUE}
 # Read in sRNA counts data
-srna_seq_counts_shortstack <- read_delim("../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt", delim="\t")
+miRNA_seq_counts_shortstack <- read_delim("../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt", delim="\t")
 
-srna_seq_counts_shortstack <- srna_seq_counts_shortstack %>% filter(MIRNA == "Y")
+miRNA_seq_counts_shortstack <- miRNA_seq_counts_shortstack %>% filter(MIRNA == "Y")
 
-str(srna_seq_counts_shortstack)
+str(miRNA_seq_counts_shortstack)
 
 ```
 
@@ -120,7 +120,7 @@ str(metadata)
 ## Extract sample names
 
 ```{r extract-sample-names, eval=TRUE}
-sample_names <- colnames(srna_seq_counts_shortstack) %>%
+sample_names <- colnames(miRNA_seq_counts_shortstack) %>%
   str_subset("^\\d+-") %>%
   str_extract("^\\d+")
 
@@ -164,40 +164,40 @@ write.table(
 coldata <- sample_treatment_df
 
 # Remove excess portions of sample column names to just "sample###"
-colnames(srna_seq_counts_shortstack) <- sub("-fastp-adapters-polyG-31bp-merged_condensed", "", colnames(srna_seq_counts_shortstack))
+colnames(miRNA_seq_counts_shortstack) <- sub("-fastp-adapters-polyG-31bp-merged_condensed", "", colnames(miRNA_seq_counts_shortstack))
 
 # Keep just the counts and cluster names as matrix
-srna_seq_counts_matrix <- as.matrix(srna_seq_counts_shortstack %>% select(-Coords, -MIRNA) %>% column_to_rownames(var = "Name"))
+miRNA_seq_counts_matrix <- as.matrix(miRNA_seq_counts_shortstack %>% select(-Coords, -MIRNA) %>% column_to_rownames(var = "Name"))
 
-str(srna_seq_counts_matrix)
+str(miRNA_seq_counts_matrix)
 ```
 
 ### Take only samples present in coldata
 
 ```{r miRNA-extract-samples, eval=TRUE}
 
-common_cols <- intersect(colnames(srna_seq_counts_matrix),
+miRNA_common_cols <- intersect(colnames(miRNA_seq_counts_matrix),
                          rownames(sample_treatment_df))
 
-srna_seq_counts_matrix <- srna_seq_counts_matrix[, common_cols]
+miRNA_seq_counts_matrix <- miRNA_seq_counts_matrix[, miRNA_common_cols]
 
-str(srna_seq_counts_matrix)
+str(miRNA_seq_counts_matrix)
 ```
 
 ### Reorder matrix cols to match coldata
 
 ```{r miRNA-reorder-matrix-cols, eval=TRUE}
-ord <- match(rownames(sample_treatment_df), colnames(srna_seq_counts_matrix))
+miRNA_ord <- match(rownames(sample_treatment_df), colnames(miRNA_seq_counts_matrix))
 
-srna_seq_counts_matrix_sorted <- srna_seq_counts_matrix[, ord]
+miRNA_seq_counts_matrix_sorted <- miRNA_seq_counts_matrix[, miRNA_ord]
 
-str(srna_seq_counts_matrix_sorted)
+str(miRNA_seq_counts_matrix_sorted)
 ```
 
 ### Verify rownames match
 
 ```{r miRNA-check-rownames, eval=TRUE}
-all(rownames(coldata) == colnames(srna_seq_counts_matrix_sorted))
+all(rownames(coldata) == colnames(miRNA_seq_counts_matrix_sorted))
 ```
 
 ## Create DESeq2 data set
@@ -205,25 +205,25 @@ all(rownames(coldata) == colnames(srna_seq_counts_matrix_sorted))
 ### Initialize DEseq2 data set
 
 ```{r miRNA-create-deseq2-data-set, eval=TRUE}
-dds <- DESeqDataSetFromMatrix(countData = srna_seq_counts_matrix_sorted,
+miRNA_dds <- DESeqDataSetFromMatrix(countData = miRNA_seq_counts_matrix_sorted,
                               colData = coldata,
                               design = ~ treatment)
-dds
+miRNA_dds
 
 ```
 
 ### Add cluster column as "gene" feature
 
 ```{r miRNA-add-cluaster-as-gene-feature, eval=TRUE}
-featureData <- data.frame(gene=rownames(srna_seq_counts_matrix_sorted))
-mcols(dds) <- DataFrame(mcols(dds), featureData)
-mcols(dds)
+miRNA_featureData <- data.frame(gene=rownames(miRNA_seq_counts_matrix_sorted))
+mcols(miRNA_dds) <- DataFrame(mcols(miRNA_dds), miRNA_featureData)
+mcols(miRNA_dds)
 ```
 
 ### Set factor levels
 
 ```{r miRNA-set-factor-levels, eval=TRUE}
-dds$treatment <- factor(dds$treatment, levels = c("control", "treatment"))
+miRNA_dds$treatment <- factor(miRNA_dds$treatment, levels = c("control", "treatment"))
 ```
 
 ## DESeq analysis
@@ -231,32 +231,32 @@ dds$treatment <- factor(dds$treatment, levels = c("control", "treatment"))
 ### DEseq
 
 ```{r miRNA-deseq, eval=TRUE}
-dds <- DESeq(dds)
+miRNA_dds <- DESeq(miRNA_dds)
 ```
 
 ### DEseq Results
 
 ```{r miRNA-assign-results, eval=TRUE}
 
-res <- results(dds, alpha = fdr, lfcThreshold = log2fc)
+miRNA_res <- results(miRNA_dds, alpha = fdr, lfcThreshold = log2fc)
 
-res
+miRNA_res
 
-summary(res)
+summary(miRNA_res)
 
-table(res$padj < fdr)
+table(miRNA_res$padj < fdr)
 ```
 
 ### Write DDS results tables to CSVs
 
 ```{r miRNA-write-dds-results-table, eval=TRUE}
-write.csv(res, file = paste0(output_dir, "deseq2", ".table.csv"), row.names = TRUE, quote = FALSE)
+write.csv(miRNA_res, file = paste0(output_dir, "deseq2", ".table.csv"), row.names = TRUE, quote = FALSE)
 
 # Subset based on adjusted p-value
-resSig <- subset(res, padj < fdr)
+miRNA_resSig <- subset(miRNA_res, padj < fdr)
 
-resSig
-write.csv(resSig, file = paste0(output_dir, "deseq2",".fdr-", fdr, ".lfc-", log2fc, ".table.csv"), row.names = TRUE, quote = FALSE)
+miRNA_resSig
+write.csv(miRNA_resSig, file = paste0(output_dir, "deseq2", ".miRNAs", ".fdr-", fdr, ".lfc-", log2fc, ".table.csv"), row.names = TRUE, quote = FALSE)
 ```
 
 ### Identify Differentially Expressed miRNAs
@@ -264,7 +264,7 @@ write.csv(resSig, file = paste0(output_dir, "deseq2",".fdr-", fdr, ".lfc-", log2
 
 
 # Extract the first column values (excluding the header)
-clusters=$(cut -d',' -f1 "../output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.fdr-0.05.lfc-0.table.csv" | tail -n +2)
+clusters=$(cut -d',' -f1 "../output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.miRNAs.fdr-0.05.lfc-0.table.csv" | tail -n +2)
 
 # Loop through each cluster and search in the Results.txt file
 for cluster in $clusters; 
@@ -288,7 +288,7 @@ done
 -   Here we transform counts using a variance stabilizing transformation (VST), since we have many samples.
 
 ```{r miRNA-VST, eval=TRUE}
-vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
+miRNA_vsd <- varianceStabilizingTransformation(miRNA_dds, blind=FALSE)
 ```
 
 ## Plotting
@@ -296,19 +296,19 @@ vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
 ### Sample distances
 
 ```{r miRNA-plot-sample-distances}
-sampleDists <- dist(t(assay(vsd)))
+miRNA_sampleDists <- dist(t(assay(miRNA_vsd)))
 
-sampleDistMatrix <- as.matrix( sampleDists )
+miRNA_sampleDistMatrix <- as.matrix( miRNA_sampleDists )
 
-rownames(sampleDistMatrix) <- paste( vsd$colony.id, vsd$time.point, sep = " - " )
+rownames(miRNA_sampleDistMatrix) <- paste( miRNA_vsd$colony.id, miRNA_vsd$time.point, sep = " - " )
 
-colnames(sampleDistMatrix) <- NULL
+colnames(miRNA_sampleDistMatrix) <- NULL
 
 colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
 
-pheatmap(sampleDistMatrix,
-         clustering_distance_rows = sampleDists,
-         clustering_distance_cols = sampleDists,
+pheatmap(miRNA_sampleDistMatrix,
+         clustering_distance_rows = miRNA_sampleDists,
+         clustering_distance_cols = miRNA_sampleDists,
          col = colors)
 ```
 
@@ -318,18 +318,18 @@ Visualize sample clustering via PCA (after transformation)
 
 ```{r miRNA-pca, eval=TRUE}
 # PCA with points color coded by time point 
-plotPCA(vsd, intgroup = c("treatment"))
+plotPCA(miRNA_vsd, intgroup = c("treatment"))
 ```
 
-### Heatmap of all 37 ShortStack miRNAs
+### Heatmap of 37 ShortStack miRNAs
 
 ```{r miRNA-heatmap, eval=TRUE}
-miRNA_counts <- order(rowMeans(counts(dds,normalized=TRUE)),
+miRNA_counts <- order(rowMeans(counts(miRNA_dds,normalized=TRUE)),
                 decreasing=TRUE)[1:37]
 
-annotation = colData(dds) %>% as.data.frame() %>% select(treatment)
+annotation = colData(miRNA_dds) %>% as.data.frame() %>% select(treatment)
 
-pheatmap(assay(vsd)[miRNA_counts,], 
+pheatmap(assay(miRNA_vsd)[miRNA_counts,], 
          cluster_rows=FALSE, 
          show_rownames=TRUE,
          cluster_cols=TRUE, 
