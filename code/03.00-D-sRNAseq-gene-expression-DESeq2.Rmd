@@ -96,6 +96,16 @@ str(srna_seq_counts_shortstack)
 
 ```
 
+## All sRNA-seq counts
+
+```{r load-sRNA-counts, eval=TRUE}
+# Read in sRNA counts data
+srna_seq_counts_all <- read_delim("../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt", delim="\t")
+
+str(srna_seq_counts_all)
+
+```
+
 # Create DESeq2 Column Data
 
 ## Read in metadata CSV
@@ -144,11 +154,13 @@ write.table(
 
 ```
 
-# Count data munging
+# SHORTSTACK miRNAS
 
-## Fix col names and convert to matrix
+## Count data munging
 
-```{r sRNA-count-data-munging, eval=TRUE}
+### Fix col names and convert to matrix
+
+```{r miRNA-count-data-munging, eval=TRUE}
 coldata <- sample_treatment_df
 
 # Remove excess portions of sample column names to just "sample###"
@@ -160,9 +172,9 @@ srna_seq_counts_matrix <- as.matrix(srna_seq_counts_shortstack %>% select(-Coord
 str(srna_seq_counts_matrix)
 ```
 
-## Take only samples present in coldata
+### Take only samples present in coldata
 
-```{r extract-samples, eval=TRUE}
+```{r miRNA-extract-samples, eval=TRUE}
 
 common_cols <- intersect(colnames(srna_seq_counts_matrix),
                          rownames(sample_treatment_df))
@@ -172,9 +184,9 @@ srna_seq_counts_matrix <- srna_seq_counts_matrix[, common_cols]
 str(srna_seq_counts_matrix)
 ```
 
-## Reorder matrix cols to match coldata
+### Reorder matrix cols to match coldata
 
-```{r reorder-matrix-cols, eval=TRUE}
+```{r miRNA-reorder-matrix-cols, eval=TRUE}
 ord <- match(rownames(sample_treatment_df), colnames(srna_seq_counts_matrix))
 
 srna_seq_counts_matrix_sorted <- srna_seq_counts_matrix[, ord]
@@ -182,17 +194,17 @@ srna_seq_counts_matrix_sorted <- srna_seq_counts_matrix[, ord]
 str(srna_seq_counts_matrix_sorted)
 ```
 
-## Verify rownames match
+### Verify rownames match
 
-```{r check-rownames, eval=TRUE}
+```{r miRNA-check-rownames, eval=TRUE}
 all(rownames(coldata) == colnames(srna_seq_counts_matrix_sorted))
 ```
 
-# Create DESeq2 data set
+## Create DESeq2 data set
 
-## Initialize DEseq2 data set
+### Initialize DEseq2 data set
 
-```{r create-deseq2-data-set, eval=TRUE}
+```{r miRNA-create-deseq2-data-set, eval=TRUE}
 dds <- DESeqDataSetFromMatrix(countData = srna_seq_counts_matrix_sorted,
                               colData = coldata,
                               design = ~ treatment)
@@ -200,31 +212,31 @@ dds
 
 ```
 
-## Add cluster column as "gene" feature
+### Add cluster column as "gene" feature
 
-```{r add-cluaster-as-gene-feature, eval=TRUE}
+```{r miRNA-add-cluaster-as-gene-feature, eval=TRUE}
 featureData <- data.frame(gene=rownames(srna_seq_counts_matrix_sorted))
 mcols(dds) <- DataFrame(mcols(dds), featureData)
 mcols(dds)
 ```
 
-## Set factor levels
+### Set factor levels
 
-```{r set-factor-levels, eval=TRUE}
+```{r miRNA-set-factor-levels, eval=TRUE}
 dds$treatment <- factor(dds$treatment, levels = c("control", "treatment"))
 ```
 
-# DESeq analysis
+## DESeq analysis
 
-## DEseq
+### DEseq
 
-```{r deseq, eval=TRUE}
+```{r miRNA-deseq, eval=TRUE}
 dds <- DESeq(dds)
 ```
 
-## DEseq Results
+### DEseq Results
 
-```{r assign-results, eval=TRUE}
+```{r miRNA-assign-results, eval=TRUE}
 
 res <- results(dds, alpha = fdr, lfcThreshold = log2fc)
 
@@ -235,9 +247,9 @@ summary(res)
 table(res$padj < fdr)
 ```
 
-## Write DDS results tables to CSVs
+### Write DDS results tables to CSVs
 
-```{r write-dds-results-table, eval=TRUE}
+```{r miRNA-write-dds-results-table, eval=TRUE}
 write.csv(res, file = paste0(output_dir, "deseq2", ".table.csv"), row.names = TRUE, quote = FALSE)
 
 # Subset based on adjusted p-value
@@ -247,8 +259,8 @@ resSig
 write.csv(resSig, file = paste0(output_dir, "deseq2",".fdr-", fdr, ".lfc-", log2fc, ".table.csv"), row.names = TRUE, quote = FALSE)
 ```
 
-## Identify Differentially Expressed miRNAs
-```{r differentially-expressed-RNAs, engine='bash', eval=TRUE}
+### Identify Differentially Expressed miRNAs
+```{r miRNA-differentially-expressed, engine='bash', eval=TRUE}
 
 
 # Extract the first column values (excluding the header)
@@ -271,19 +283,19 @@ do
 done
 ```
 
-# Variance stabilizing transformations (VST)
+## Variance stabilizing transformations (VST)
 
 -   Here we transform counts using a variance stabilizing transformation (VST), since we have many samples.
 
-```{r VST, eval=TRUE}
+```{r miRNA-VST, eval=TRUE}
 vsd <- varianceStabilizingTransformation(dds, blind=FALSE)
 ```
 
-# Plotting
+## Plotting
 
-## Sample distances
+### Sample distances
 
-```{r plot-sample-distances}
+```{r miRNA-plot-sample-distances}
 sampleDists <- dist(t(assay(vsd)))
 
 sampleDistMatrix <- as.matrix( sampleDists )
@@ -300,24 +312,24 @@ pheatmap(sampleDistMatrix,
          col = colors)
 ```
 
-## PCA
+### PCA
 
 Visualize sample clustering via PCA (after transformation)
 
-```{r pca, eval=TRUE}
+```{r miRNA-pca, eval=TRUE}
 # PCA with points color coded by time point 
 plotPCA(vsd, intgroup = c("treatment"))
 ```
 
-## Heatmap of all 37 ShortStack miRNAs
+### Heatmap of all 37 ShortStack miRNAs
 
-```{r heatmap, eval=TRUE}
-top40_counts <- order(rowMeans(counts(dds,normalized=TRUE)),
+```{r miRNA-heatmap, eval=TRUE}
+miRNA_counts <- order(rowMeans(counts(dds,normalized=TRUE)),
                 decreasing=TRUE)[1:37]
 
 annotation = colData(dds) %>% as.data.frame() %>% select(treatment)
 
-pheatmap(assay(vsd)[top40_counts,], 
+pheatmap(assay(vsd)[miRNA_counts,], 
          cluster_rows=FALSE, 
          show_rownames=TRUE,
          cluster_cols=TRUE, 
