@@ -250,7 +250,7 @@ table(miRNA_res$padj < fdr)
 ### Write DDS results tables to CSVs
 
 ```{r miRNA-write-dds-results-table, eval=TRUE}
-write.csv(miRNA_res, file = paste0(output_dir, "deseq2", ".table.csv"), row.names = TRUE, quote = FALSE)
+write.csv(miRNA_res, file = paste0(output_dir, "deseq2", ".miRNAs", ".table.csv"), row.names = TRUE, quote = FALSE)
 
 # Subset based on adjusted p-value
 miRNA_resSig <- subset(miRNA_res, padj < fdr)
@@ -270,7 +270,8 @@ clusters=$(cut -d',' -f1 "../output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq
 for cluster in $clusters; 
 do
     grep "$cluster" "../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Results.txt"
-done
+done \
+| tee ../output/03.00-D-sRNAseq-gene-expression-DESeq2/DE-miRNAs.fdr-0.05.lfc-0.tab
 
 echo ""
 echo "--------------------------------------------------------------"
@@ -332,6 +333,180 @@ annotation = colData(miRNA_dds) %>% as.data.frame() %>% select(treatment)
 pheatmap(assay(miRNA_vsd)[miRNA_counts,], 
          cluster_rows=FALSE, 
          show_rownames=TRUE,
+         cluster_cols=TRUE, 
+         annotation_col = annotation)
+
+```
+
+# ALL sRNA
+
+## Count data munging
+
+### Fix col names and convert to matrix
+
+```{r sRNA-count-data-munging, eval=TRUE}
+coldata <- sample_treatment_df
+
+# Remove excess portions of sample column names to just "sample###"
+colnames(srna_seq_counts_all) <- sub("-fastp-adapters-polyG-31bp-merged_condensed", "", colnames(srna_seq_counts_all))
+
+# Keep just the counts and cluster names as matrix
+srna_seq_counts_matrix <- as.matrix(srna_seq_counts_all %>% select(-Coords, -MIRNA) %>% column_to_rownames(var = "Name"))
+
+str(srna_seq_counts_matrix)
+```
+
+### Take only samples present in coldata
+
+```{r miRNA-extract-samples, eval=TRUE}
+
+sRNA_common_cols <- intersect(colnames(srna_seq_counts_matrix),
+                         rownames(sample_treatment_df))
+
+srna_seq_counts_matrix <- srna_seq_counts_matrix[, sRNA_common_cols]
+
+str(srna_seq_counts_matrix)
+```
+
+### Reorder matrix cols to match coldata
+
+```{r sRNA-reorder-matrix-cols, eval=TRUE}
+sRNA_ord <- match(rownames(sample_treatment_df), colnames(srna_seq_counts_matrix))
+
+srna_seq_counts_matrix_sorted <- srna_seq_counts_matrix[, sRNA_ord]
+
+str(srna_seq_counts_matrix_sorted)
+```
+
+### Verify rownames match
+
+```{r sRNA-check-rownames, eval=TRUE}
+all(rownames(coldata) == colnames(srna_seq_counts_matrix_sorted))
+```
+
+## Create DESeq2 data set
+
+### Initialize DEseq2 data set
+
+```{r sRNA-create-deseq2-data-set, eval=TRUE}
+sRNA_dds <- DESeqDataSetFromMatrix(countData = srna_seq_counts_matrix_sorted,
+                              colData = coldata,
+                              design = ~ treatment)
+sRNA_dds
+
+```
+
+### Add cluster column as "gene" feature
+
+```{r sRNA-add-cluaster-as-gene-feature, eval=TRUE}
+sRNA_featureData <- data.frame(gene=rownames(srna_seq_counts_matrix_sorted))
+mcols(sRNA_dds) <- DataFrame(mcols(sRNA_dds), sRNA_featureData)
+mcols(sRNA_dds)
+```
+
+### Set factor levels
+
+```{r sRNA-set-factor-levels, eval=TRUE}
+sRNA_dds$treatment <- factor(sRNA_dds$treatment, levels = c("control", "treatment"))
+```
+
+## DESeq analysis
+
+### DEseq
+
+```{r sRNA-deseq, eval=TRUE}
+sRNA_dds <- DESeq(sRNA_dds)
+```
+
+### DEseq Results
+
+```{r sRNA-assign-results, eval=TRUE}
+
+sRNA_res <- results(sRNA_dds, alpha = fdr, lfcThreshold = log2fc)
+
+sRNA_res
+
+summary(sRNA_res)
+
+table(sRNA_res$padj < fdr)
+```
+
+### Write DDS results tables to CSVs
+
+```{r sRNA-write-dds-results-table, eval=TRUE}
+write.csv(sRNA_res, file = paste0(output_dir, "deseq2", ".sRNAs", ".table.csv"), row.names = TRUE, quote = FALSE)
+
+# Subset based on adjusted p-value
+sRNA_resSig <- subset(sRNA_res, padj < fdr)
+
+sRNA_resSig
+write.csv(sRNA_resSig, file = paste0(output_dir, "deseq2", ".sRNAs", ".fdr-", fdr, ".lfc-", log2fc, ".table.csv"), row.names = TRUE, quote = FALSE)
+```
+
+### Identify Differentially Expressed sRNAs
+```{r sRNA-differentially-expressed, engine='bash', eval=TRUE}
+
+
+# Extract the first column values (excluding the header)
+clusters=$(cut -d',' -f1 "../output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.sRNAs.fdr-0.05.lfc-0.table.csv" | tail -n +2)
+
+# Loop through each cluster and search in the Results.txt file
+for cluster in $clusters; 
+do
+    grep "$cluster" "../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Results.txt"
+done > ../output/03.00-D-sRNAseq-gene-expression-DESeq2/DE-sRNAs.fdr-0.05.lfc-0.tab
+
+```
+
+## Variance stabilizing transformations (VST)
+
+-   Here we transform counts using a variance stabilizing transformation (VST), since we have many samples.
+
+```{r sRNA-VST, eval=TRUE}
+sRNA_vsd <- varianceStabilizingTransformation(sRNA_dds, blind=FALSE)
+```
+
+## Plotting
+
+### Sample distances
+
+```{r sRNA-plot-sample-distances}
+sRNA_sampleDists <- dist(t(assay(sRNA_vsd)))
+
+sRNA_sampleDistMatrix <- as.matrix( sRNA_sampleDists )
+
+rownames(sRNA_sampleDistMatrix) <- paste( sRNA_vsd$colony.id, sRNA_vsd$time.point, sep = " - " )
+
+colnames(sRNA_sampleDistMatrix) <- NULL
+
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+
+pheatmap(sRNA_sampleDistMatrix,
+         clustering_distance_rows = sRNA_sampleDists,
+         clustering_distance_cols = sRNA_sampleDists,
+         col = colors)
+```
+
+### PCA
+
+Visualize sample clustering via PCA (after transformation)
+
+```{r sRNA-pca, eval=TRUE}
+# PCA with points color coded by time point 
+plotPCA(sRNA_vsd, intgroup = c("treatment"))
+```
+
+### Heatmap of Top 50 sRNAs
+
+```{r sRNA-heatmap, eval=TRUE}
+sRNA_counts_top50 <- order(rowMeans(counts(sRNA_dds,normalized=TRUE)),
+                decreasing=TRUE)[1:50]
+
+annotation = colData(sRNA_dds) %>% as.data.frame() %>% select(treatment)
+
+pheatmap(assay(sRNA_vsd)[sRNA_counts_top50,], 
+         cluster_rows=FALSE, 
+         show_rownames=FALSE,
          cluster_cols=TRUE, 
          annotation_col = annotation)
 
