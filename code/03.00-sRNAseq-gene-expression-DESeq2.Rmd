@@ -1,5 +1,5 @@
 ---
-title: "03.00-D-sRNAseq-gene-expression-DESeq2"
+title: "03.00-sRNAseq-gene-expression-DESeq2"
 author: "Sam White"
 date: "2025-01-31"
 output: 
@@ -45,7 +45,7 @@ This includes the 37 miRNAs identified by ShortStack.
 
 -   [`Counts.txt`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt): ShortStack counts matrix. Includes all clusters, including those that were *not* categorized as miRNAs.
 
--   [`DESeq2-coldata.tab`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab): Two column table with sample ID and treatment. This file is also an output from this notebook.
+-   [`DESeq2-coldata.tab`](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/output/03.00-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab): Two column table with sample ID and treatment. This file is also an output from this notebook.
 
 -   [ManilaOA2023_shortRNASeq_Meta.csv](https://github.com/RobertsLab/project-clam-oa/blob/d380ed9a88c874db5434c9ec74f6ab1de042bad5/data/ManilaOA2023_shortRNASeq_Meta.csv): Metadata file for this sRNA-seq data.
 
@@ -86,7 +86,7 @@ knitr::opts_chunk$set(
 
 ```{r set-variables, eval=TRUE}
 # Define the output directory path
-output_dir <- "../output/03.00-D-sRNAseq-gene-expression-DESeq2/"
+output_dir <- "../output/03.00-sRNAseq-gene-expression-DESeq2/"
 
 # Set desired false discovery rate threshold (i.e. adjusted p-value, padj)
 fdr <- 0.05
@@ -103,7 +103,7 @@ Counts generated in `02.00-ShortStack-31bp-fastp-merged`.
 
 ## Select only miRNAs IDd by ShortStack
 
-```{r load-sRNA-counts, eval=TRUE}
+```{r load-miRNA-counts, eval=TRUE}
 # Read in sRNA counts data
 miRNA_seq_counts_shortstack <- read_delim("../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Counts.txt", delim="\t")
 
@@ -163,7 +163,7 @@ str(sample_treatment_df)
 ```{r write-deseq-coldata, eval=TRUE}
 write.table(
   sample_treatment_df,
-  file = "../output/03.00-D-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab",
+  file = "../output/03.00-sRNAseq-gene-expression-DESeq2/DESeq2-coldata.tab",
   sep = "\t",
   quote = FALSE,
   col.names = NA
@@ -281,14 +281,14 @@ write.csv(miRNA_resSig, file = paste0(output_dir, "deseq2", ".miRNAs", ".fdr-", 
 
 
 # Extract the first column values (excluding the header)
-clusters=$(cut -d',' -f1 "../output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.miRNAs.fdr-0.05.lfc-0.table.csv" | tail -n +2)
+clusters=$(cut -d',' -f1 "../output/03.00-sRNAseq-gene-expression-DESeq2/deseq2.miRNAs.fdr-0.05.lfc-0.table.csv" | tail -n +2)
 
 # Loop through each cluster and search in the Results.txt file
 for cluster in $clusters; 
 do
     grep "$cluster" "../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Results.txt"
 done \
-| tee ../output/03.00-D-sRNAseq-gene-expression-DESeq2/DE-miRNAs.fdr-0.05.lfc-0.tab
+| tee ../output/03.00-sRNAseq-gene-expression-DESeq2/DE-miRNAs.fdr-0.05.lfc-0.tab
 
 echo ""
 echo "--------------------------------------------------------------"
@@ -313,7 +313,7 @@ miRNA_vsd <- varianceStabilizingTransformation(miRNA_dds, blind=FALSE)
 
 ### Sample distances
 
-```{r miRNA-plot-sample-distances}
+```{r miRNA-plot-sample-distances, eval=TRUE}
 miRNA_sampleDists <- dist(t(assay(miRNA_vsd)))
 
 miRNA_sampleDistMatrix <- as.matrix( miRNA_sampleDists )
@@ -375,7 +375,7 @@ str(srna_seq_counts_matrix)
 
 ### Take only samples present in coldata
 
-```{r miRNA-extract-samples, eval=TRUE}
+```{r sRNA-extract-samples, eval=TRUE}
 
 sRNA_common_cols <- intersect(colnames(srna_seq_counts_matrix),
                          rownames(sample_treatment_df))
@@ -465,13 +465,13 @@ write.csv(sRNA_resSig, file = paste0(output_dir, "deseq2", ".sRNAs", ".fdr-", fd
 
 
 # Extract the first column values (excluding the header)
-clusters=$(cut -d',' -f1 "../output/03.00-D-sRNAseq-gene-expression-DESeq2/deseq2.sRNAs.fdr-0.05.lfc-0.table.csv" | tail -n +2)
+clusters=$(cut -d',' -f1 "../output/03.00-sRNAseq-gene-expression-DESeq2/deseq2.sRNAs.fdr-0.05.lfc-0.table.csv" | tail -n +2)
 
 # Loop through each cluster and search in the Results.txt file
 for cluster in $clusters; 
 do
     grep "$cluster" "../output/02.00-ShortStack-31bp-fastp-merged/ShortStack_out/Results.txt"
-done > ../output/03.00-D-sRNAseq-gene-expression-DESeq2/DE-sRNAs.fdr-0.05.lfc-0.tab
+done > ../output/03.00-sRNAseq-gene-expression-DESeq2/DE-sRNAs.fdr-0.05.lfc-0.tab
 
 ```
 
@@ -487,7 +487,7 @@ sRNA_vsd <- varianceStabilizingTransformation(sRNA_dds, blind=FALSE)
 
 ### Sample distances
 
-```{r sRNA-plot-sample-distances}
+```{r sRNA-plot-sample-distances, eval=TRUE}
 sRNA_sampleDists <- dist(t(assay(sRNA_vsd)))
 
 sRNA_sampleDistMatrix <- as.matrix( sRNA_sampleDists )
